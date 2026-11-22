@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="de">
+<html lang="de" data-theme="sunny">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Kopfwetter</title>
-<meta name="theme-color" content="#1d3d78">
+<meta name="theme-color" content="#1f4b8c">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -13,243 +13,334 @@
 <link rel="apple-touch-icon" href="icon-180.png">
 <link rel="icon" href="icon-192.png">
 <style>
-:root{
-  --bg1:#1b3a74;--bg2:#3a6aa8;--card:rgba(10,25,60,.55);--card2:rgba(255,255,255,.08);
-  --line:rgba(255,255,255,.16);--txt:#f4f7ff;--mut:rgba(235,242,255,.68);
-  --l1:#f5d94a;--l2:#f2a65a;--l3:#e8596b;--up:#7b8cf0;--now:#5fd068;
-}
+:root{--l1:#f5d94a;--l2:#f2a65a;--l3:#ee5d70;--up:#8a9bff;--now:#5fd068;--txt:#fff;--mut:rgba(255,255,255,.72);--line:rgba(255,255,255,.22)}
+html[data-theme=classic]{--g1:#1b48a6;--g2:#2f6fd6;--g3:#5b9af0;--glass:rgba(20,50,120,.45)}
+html[data-theme=dawn]{--g1:#2c2f5c;--g2:#6b5a86;--g3:#c08a8f;--glass:rgba(40,35,80,.45)}
+html[data-theme=sunny]{--g1:#1c4180;--g2:#3a68a6;--g3:#7fa3d2;--glass:rgba(18,45,100,.42)}
+html[data-theme=sunset]{--g1:#262a58;--g2:#6d5e8e;--g3:#d29a76;--glass:rgba(35,32,75,.45)}
+html[data-theme=midnight]{--g1:#070b1f;--g2:#121a3a;--g3:#1f2a55;--glass:rgba(255,255,255,.06)}
+html[data-theme=aurora]{--g1:#0a1a2e;--g2:#123a4a;--g3:#1f7a6c;--glass:rgba(8,30,45,.5)}
+html[data-theme=coral]{--g1:#2a1220;--g2:#5c2a32;--g3:#b4614a;--glass:rgba(45,15,25,.45)}
+html[data-theme=forest]{--g1:#0c1f15;--g2:#183a26;--g3:#3c6a45;--glass:rgba(10,30,18,.5)}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-html,body{margin:0;padding:0}
-html{background:#2b5a97}
-body{font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",Roboto,sans-serif;color:var(--txt);
-  background:linear-gradient(180deg,var(--bg1) 0%,#26508f 45%,var(--bg2) 100%) fixed;min-height:100vh;
-  padding:calc(env(safe-area-inset-top) + 10px) 0 calc(env(safe-area-inset-bottom) + 84px)}
-.wrap{max-width:720px;margin:0 auto;padding:0 14px}
-h2{font-size:17px;margin:22px 4px 10px;font-weight:700}
-.top{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:6px 4px 12px}
-.place{display:flex;align-items:center;gap:8px;font-size:26px;font-weight:700;cursor:pointer;min-width:0}
+html{background:var(--g2)}
+body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",Roboto,sans-serif;color:var(--txt);min-height:100vh;
+  background:linear-gradient(180deg,var(--g1) 0%,var(--g2) 55%,var(--g3) 100%) fixed;transition:background .6s;
+  padding:calc(env(safe-area-inset-top) + 12px) 0 calc(env(safe-area-inset-bottom) + 110px);-webkit-font-smoothing:antialiased}
+svg.i{width:24px;height:24px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;flex:none}
+svg.wi{width:30px;height:30px;flex:none}
+.wrap{max-width:720px;margin:0 auto;padding:0 16px}
+.top{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:4px 2px 16px}
+.place{display:flex;align-items:center;gap:10px;font-size:30px;font-weight:800;letter-spacing:-.4px;cursor:pointer;min-width:0;background:none;border:0;color:#fff;padding:0}
 .place span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.place svg{flex:none}
-.btn{border:1px solid var(--line);background:var(--card2);color:var(--txt);border-radius:14px;padding:9px 13px;font-size:15px;font-weight:600;cursor:pointer}
-.btn.pri{background:#4f86ff;border-color:#4f86ff}
-.btn.sm{padding:6px 10px;font-size:13px;border-radius:11px}
-.btn:disabled{opacity:.5}
-.cards{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.card{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:13px 15px;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
-.card .k{font-size:13px;color:var(--mut);display:flex;align-items:center;gap:6px}
-.card .v{font-size:30px;font-weight:800;letter-spacing:-.5px;margin-top:3px;display:flex;align-items:baseline;gap:5px}
-.card .v small{font-size:15px;font-weight:600}
-.card .s{font-size:13px;color:var(--mut);margin-top:3px}
-.span2{grid-column:1/3}
-.warn{display:flex;gap:12px;align-items:flex-start;border-radius:18px;padding:12px 14px;margin:12px 0 0;font-size:15px;line-height:1.35}
+.place svg{width:26px;height:26px;fill:#fff;stroke:none}
+.round{width:46px;height:46px;border-radius:50%;border:1.5px solid rgba(255,255,255,.38);background:rgba(255,255,255,.14);color:#fff;display:grid;place-items:center;cursor:pointer;flex:none;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.25),0 4px 14px rgba(0,0,0,.15);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
+.round.spin svg{animation:sp 1s linear infinite}@keyframes sp{to{transform:rotate(360deg)}}
+.card{background:var(--glass);border:1px solid var(--line);border-radius:22px;padding:14px 16px;backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);box-shadow:inset 0 1px 0 rgba(255,255,255,.12)}
+.k{font-size:14px;color:var(--mut);display:flex;align-items:center;gap:6px}
+.k svg.i{width:16px;height:16px}
+.v{font-size:32px;font-weight:800;letter-spacing:-.6px;margin-top:4px;display:flex;align-items:baseline;gap:5px;font-variant-numeric:tabular-nums}
+.v small{font-size:15px;font-weight:600;letter-spacing:0}
+.s{font-size:13px;color:var(--mut);margin-top:4px;line-height:1.35}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px}
+.gauge{display:grid;grid-template-columns:150px 1fr;align-items:center;gap:10px}
+.gauge svg{width:150px;height:auto}
+.gauge .big{font-size:34px;font-weight:800;letter-spacing:-1px;font-variant-numeric:tabular-nums;line-height:1.05;margin-top:4px;white-space:nowrap}
+.gauge .big small{font-size:16px;font-weight:600;letter-spacing:0}
+.trend{white-space:nowrap;display:inline-flex;align-items:center;gap:6px;margin-top:8px;font-size:14px;font-weight:700;border-radius:10px;padding:4px 9px;background:rgba(255,255,255,.14)}
+.warn{display:flex;gap:12px;align-items:flex-start;border-radius:20px;padding:13px 15px;margin-top:10px;font-size:15px;line-height:1.38}
 .warn b{display:block;font-size:16px;margin-bottom:2px}
-.warn .ic{font-size:24px;line-height:1}
-.w3{background:rgba(232,89,107,.28);border:1px solid rgba(232,89,107,.7)}
-.w2{background:rgba(242,166,90,.25);border:1px solid rgba(242,166,90,.7)}
-.w0{background:rgba(95,208,104,.18);border:1px solid rgba(95,208,104,.55)}
-.legend{display:flex;flex-wrap:wrap;gap:12px;font-size:13px;color:var(--mut);margin:12px 4px 8px;align-items:center}
-.legend i{display:inline-block;width:16px;height:11px;border-radius:3px;margin-right:5px;vertical-align:-1px}
-.zoom{display:flex;gap:6px;margin-left:auto}
-.zoom button{border:1px solid var(--line);background:transparent;color:var(--txt);border-radius:10px;padding:5px 9px;font-size:13px;cursor:pointer}
-.zoom button.on{background:rgba(255,255,255,.2)}
-.chartbox{position:relative;border-radius:20px;overflow:hidden;background:rgba(8,20,50,.35);border:1px solid var(--line)}
-.readout{position:absolute;left:10px;right:10px;top:8px;z-index:3;display:flex;gap:8px;pointer-events:none}
-.readout div{background:rgba(15,35,80,.85);border:1px solid var(--line);border-radius:12px;padding:5px 9px;font-size:13px;line-height:1.25}
-.readout b{font-size:16px}
-.scroller{overflow-x:auto;overflow-y:hidden;-webkit-overflow-scrolling:touch;scrollbar-width:none;touch-action:pan-x}
+.warn .ico{width:38px;height:38px;border-radius:12px;display:grid;place-items:center;flex:none}
+.w3{background:rgba(238,93,112,.28);border:1px solid rgba(238,93,112,.75)} .w3 .ico{background:var(--l3)}
+.w2{background:rgba(242,166,90,.24);border:1px solid rgba(242,166,90,.75)} .w2 .ico{background:var(--l2)}
+.w0{background:rgba(95,208,104,.17);border:1px solid rgba(95,208,104,.6)} .w0 .ico{background:var(--now)}
+h3{font-size:19px;font-weight:800;margin:24px 4px 10px;letter-spacing:-.2px;display:flex;align-items:center;justify-content:space-between}
+h3 small{font-size:13px;font-weight:600;color:var(--mut)}
+.legend{display:inline-flex;flex-wrap:wrap;gap:12px;align-items:center;font-size:14px;border-radius:16px;padding:9px 14px;background:var(--glass);border:1px solid var(--line)}
+.legend i{display:inline-block;width:18px;height:11px;border-radius:3px;margin-right:6px;vertical-align:-1px}
+.seg{display:flex;gap:4px;background:var(--glass);border:1px solid var(--line);border-radius:14px;padding:3px}
+.seg button{border:0;background:transparent;color:#fff;border-radius:11px;padding:7px 11px;font-size:13px;font-weight:600;cursor:pointer}
+.seg button.on{background:rgba(255,255,255,.24)}
+.bar2{display:flex;gap:8px;align-items:center;justify-content:space-between;margin:12px 0 10px;flex-wrap:wrap}
+.chartbox{position:relative;border-radius:22px;overflow:hidden;background:rgba(0,0,0,.12);border:1px solid var(--line)}
+.readout{position:absolute;left:10px;right:10px;top:10px;z-index:3;display:flex;gap:8px;pointer-events:none}
+.readout .p{background:rgba(15,35,80,.82);border:1px solid rgba(255,255,255,.22);border-radius:14px;padding:6px 11px;font-size:12.5px;line-height:1.25;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);color:var(--mut)}
+.readout .p b{font-size:18px;color:#fff;font-variant-numeric:tabular-nums}
+.scroller{overflow-x:auto;overflow-y:hidden;-webkit-overflow-scrolling:touch;scrollbar-width:none}
 .scroller::-webkit-scrollbar{display:none}
-.yaxis{position:absolute;left:0;top:0;bottom:0;width:44px;pointer-events:none;z-index:2}
-.nowbtn{position:absolute;right:10px;bottom:34px;z-index:3;width:44px;height:44px;border-radius:50%;border:1px solid rgba(255,255,255,.5);background:rgba(255,255,255,.22);color:#fff;font-size:20px;cursor:pointer;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
-.days{display:flex;flex-direction:column;gap:6px}
-.day{display:grid;grid-template-columns:52px 30px 1fr auto;align-items:center;gap:8px;background:var(--card);border:1px solid var(--line);border-radius:15px;padding:9px 12px;cursor:pointer}
-.day .d{font-weight:700;font-size:15px}
-.day .d small{display:block;font-weight:500;color:var(--mut);font-size:12px}
-.day .wi{font-size:24px;text-align:center}
-.day .t{font-size:14px}
-.day .t small{color:var(--mut)}
-.chip{font-size:12px;font-weight:700;border-radius:9px;padding:4px 8px;white-space:nowrap;color:#1a1a1a}
-.c0{background:rgba(255,255,255,.16);color:var(--txt)}
-.c1{background:var(--l1)}.c2{background:var(--l2)}.c3{background:var(--l3);color:#fff}.cu{background:var(--up);color:#fff}
-.feel{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:10px}
-.feel button{border:1px solid var(--line);background:var(--card2);color:var(--txt);border-radius:14px;padding:10px 4px;font-size:13px;cursor:pointer}
-.feel button span{display:block;font-size:24px;margin-bottom:3px}
-.feel button.on{background:rgba(255,255,255,.28);border-color:#fff}
-.log{display:flex;flex-direction:column;gap:5px;margin-top:10px}
-.lr{display:grid;grid-template-columns:1fr auto auto;align-items:center;gap:8px;padding:7px 10px;border-radius:13px;background:var(--card2)}
-.lr .dd{font-size:14px}
-.lr .dd small{color:var(--mut)}
-.pick{display:flex;gap:4px}
-.pick button{width:32px;height:32px;border-radius:10px;border:1px solid var(--line);background:transparent;font-size:17px;cursor:pointer;padding:0;opacity:.45}
-.pick button.on{opacity:1;background:rgba(255,255,255,.25);border-color:#fff}
+.yaxis{position:absolute;left:0;top:0;width:44px;pointer-events:none;z-index:2}
+.nowbtn{position:absolute;right:12px;bottom:46px;z-index:3}
+.days{display:flex;flex-direction:column;gap:8px}
+.day{display:grid;grid-template-columns:56px 36px 1fr auto 14px;align-items:center;gap:10px;background:var(--glass);border:1px solid var(--line);border-radius:18px;padding:11px 12px;cursor:pointer;color:#fff;text-align:left;width:100%;font:inherit}
+.day:active{transform:scale(.985)}
+.day .d{font-weight:800;font-size:16px}
+.day .d small{display:block;font-weight:500;color:var(--mut);font-size:12.5px;margin-top:1px}
+.day .t{font-size:15px;font-variant-numeric:tabular-nums}
+.day .t small{color:var(--mut);font-size:12.5px}
+.day svg.i{width:16px;height:16px;opacity:.6}
+.tbar{position:relative;height:5px;border-radius:3px;background:rgba(255,255,255,.15);margin-top:6px;overflow:hidden}
+.tbar i{position:absolute;top:0;bottom:0;border-radius:3px;background:linear-gradient(90deg,#7cc4ff,#ffd25a,#ff9a5a)}
+.chip{font-size:12px;font-weight:800;border-radius:10px;padding:5px 9px;white-space:nowrap;color:#1a1a1a}
+.c0{background:rgba(255,255,255,.18);color:#fff}.c1{background:var(--l1)}.c2{background:var(--l2)}.c3{background:var(--l3);color:#fff}.cu{background:var(--up);color:#fff}
+.feel{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:12px}
+.feel button{border:1px solid var(--line);background:rgba(255,255,255,.08);color:#fff;border-radius:16px;padding:12px 4px 10px;font-size:13px;font-weight:600;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:7px}
+.feel button i{width:18px;height:18px;border-radius:50%;display:block;box-shadow:0 0 0 3px rgba(255,255,255,.12)}
+.feel button.on{background:rgba(255,255,255,.26);border-color:#fff}
+.dot0{background:#5fd068}.dot1{background:#f5d94a}.dot2{background:#f2a65a}.dot3{background:#ee5d70}
+.log{display:flex;flex-direction:column;gap:6px}
+.lr{display:grid;grid-template-columns:1fr auto auto;align-items:center;gap:10px;padding:9px 12px;border-radius:16px;background:var(--glass);border:1px solid var(--line)}
+.lr .dd{font-size:15px;font-weight:700}
+.pick{display:flex;gap:5px}
+.pick button{width:30px;height:30px;border-radius:50%;border:2px solid transparent;cursor:pointer;padding:0;opacity:.28}
+.pick button.on{opacity:1;border-color:#fff}
 .stat{font-size:15px;line-height:1.45}
-.stat .big{font-size:34px;font-weight:800}
-.bar{height:10px;border-radius:6px;background:rgba(255,255,255,.14);overflow:hidden;margin:4px 0 10px}
-.bar i{display:block;height:100%;border-radius:6px}
-.row{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 0;border-bottom:1px solid var(--line)}
-.row:last-child{border-bottom:0}
-.row .lbl{font-size:15px}
-.row .lbl small{display:block;color:var(--mut);font-size:12.5px;margin-top:2px}
-select,input[type=text]{background:rgba(255,255,255,.12);color:var(--txt);border:1px solid var(--line);border-radius:11px;padding:8px 10px;font-size:15px}
-select option{color:#000}
-.sw{position:relative;width:52px;height:31px;flex:none}
-.sw input{opacity:0;width:0;height:0}
-.sw span{position:absolute;inset:0;background:rgba(255,255,255,.22);border-radius:20px;transition:.2s;cursor:pointer}
-.sw span:before{content:"";position:absolute;width:25px;height:25px;left:3px;top:3px;background:#fff;border-radius:50%;transition:.2s}
+.stat .big{font-size:38px;font-weight:800;letter-spacing:-1px}
+.meter{height:9px;border-radius:6px;background:rgba(255,255,255,.14);overflow:hidden;margin:6px 0 12px}
+.meter i{display:block;height:100%;border-radius:6px}
+/* Einstellungen */
+.group{background:var(--glass);border:1px solid var(--line);border-radius:20px;overflow:hidden}
+.srow{display:flex;align-items:center;gap:12px;padding:13px 14px;border-bottom:1px solid rgba(255,255,255,.12);cursor:pointer;color:#fff;background:none;border-left:0;border-right:0;border-top:0;width:100%;text-align:left;font:inherit}
+.srow:last-child{border-bottom:0}
+.srow .sq{width:34px;height:34px;border-radius:10px;display:grid;place-items:center;flex:none}
+.srow .sq svg.i{width:20px;height:20px;color:#fff}
+.srow .tx{flex:1;min-width:0;font-size:16px;font-weight:600}
+.srow .tx small{display:block;font-size:13px;font-weight:400;color:var(--mut);margin-top:2px;line-height:1.35}
+.srow .val{color:var(--mut);font-size:15px}
+.srow > svg.i{width:18px;height:18px;opacity:.7}
+.page{position:fixed;inset:0;z-index:40;overflow-y:auto;background:linear-gradient(180deg,var(--g1) 0%,var(--g2) 55%,var(--g3) 100%);
+  padding:calc(env(safe-area-inset-top) + 12px) 0 calc(env(safe-area-inset-bottom) + 120px);transform:translateX(100%);transition:transform .32s cubic-bezier(.2,.8,.2,1)}
+.page.on{transform:none}
+.page h1{font-size:38px;font-weight:800;letter-spacing:-.8px;margin:18px 2px 18px;line-height:1.1}
+.opt{display:flex;align-items:center;gap:12px;padding:16px 2px;border-bottom:1px solid rgba(255,255,255,.35);cursor:pointer;width:100%;background:none;border-left:0;border-right:0;border-top:0;color:#fff;text-align:left;font:inherit}
+.opt .tx{flex:1}
+.opt .tx b{font-size:20px;font-weight:700;display:flex;align-items:center;gap:10px}
+.opt .tx small{display:block;font-size:15px;margin-top:5px;color:rgba(255,255,255,.9)}
+.sw8{width:26px;height:26px;border-radius:50%;display:inline-block;box-shadow:inset 0 0 0 1px rgba(255,255,255,.2)}
+.chk{width:28px;height:28px;border-radius:50%;background:var(--now);display:grid;place-items:center;flex:none}
+.chk svg.i{width:17px;height:17px;stroke-width:2.6}
+.help{font-size:15px;line-height:1.5;color:rgba(255,255,255,.9)}
+.sw{position:relative;width:64px;height:36px;flex:none}
+.sw input{opacity:0;width:0;height:0;position:absolute}
+.sw span{position:absolute;inset:0;background:rgba(255,255,255,.28);border-radius:20px;transition:.2s;cursor:pointer}
+.sw span:before{content:"";position:absolute;width:44px;height:30px;left:3px;top:3px;background:#fff;border-radius:16px;transition:.2s;box-shadow:0 2px 6px rgba(0,0,0,.2)}
 .sw input:checked+span{background:var(--now)}
-.sw input:checked+span:before{transform:translateX(21px)}
-.tabs{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(env(safe-area-inset-bottom) + 10px);z-index:20;display:flex;gap:4px;padding:6px;border-radius:26px;
-  background:rgba(70,120,200,.55);border:1px solid rgba(255,255,255,.3);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px)}
-.tabs button{border:0;background:transparent;color:#eaf2ff;font-size:12px;font-weight:600;padding:7px 14px;border-radius:20px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:2px}
-.tabs button span{font-size:20px}
-.tabs button.on{background:rgba(255,255,255,.25)}
-.view{display:none}.view.on{display:block}
-.modal{position:fixed;inset:0;z-index:50;background:rgba(0,0,0,.5);display:none;align-items:flex-end;justify-content:center}
-.modal.on{display:flex}
-.sheet{background:#22457f;border-radius:22px 22px 0 0;width:100%;max-width:720px;padding:18px 16px calc(env(safe-area-inset-bottom) + 18px);max-height:85vh;overflow:auto}
-.res{padding:11px 4px;border-bottom:1px solid var(--line);cursor:pointer}
+.sw input:checked+span:before{transform:translateX(14px)}
+.btn{border:1.5px solid rgba(255,255,255,.38);background:rgba(255,255,255,.14);color:#fff;border-radius:22px;padding:14px 18px;font-size:17px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px;width:100%;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.2)}
+.btn.sm{width:auto;padding:8px 14px;font-size:14px;border-radius:14px}
+select,input[type=text]{background:rgba(255,255,255,.14);color:#fff;border:1px solid var(--line);border-radius:12px;padding:10px 12px;font-size:16px;font-family:inherit}
+select option{color:#000}
+/* Tableiste */
+.tabs{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(env(safe-area-inset-bottom) + 8px);z-index:50;display:flex;gap:2px;padding:6px;border-radius:32px;width:min(94vw,560px);
+  background:rgba(255,255,255,.16);border:1.5px solid rgba(255,255,255,.42);backdrop-filter:blur(18px) saturate(1.4);-webkit-backdrop-filter:blur(18px) saturate(1.4);box-shadow:inset 0 1px 0 rgba(255,255,255,.35),0 8px 30px rgba(0,0,0,.18)}
+.tabs button{flex:1;border:0;background:transparent;color:#e9f3ff;font-size:12.5px;font-weight:600;padding:8px 2px 7px;border-radius:26px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:3px;font-family:inherit}
+.tabs button svg.i{width:27px;height:27px;stroke-width:1.9}
+.tabs button.on{background:rgba(255,255,255,.26);color:#fff}
+.view{display:none}.view.on{display:block;animation:fi .25s}
+@keyframes fi{from{opacity:.3;transform:translateY(6px)}to{opacity:1;transform:none}}
+/* Tagesansicht */
+.sheetbg{position:fixed;inset:0;z-index:60;background:rgba(0,0,0,.45);opacity:0;pointer-events:none;transition:opacity .25s}
+.sheetbg.on{opacity:1;pointer-events:auto}
+.sheet{position:fixed;left:0;right:0;bottom:0;z-index:61;max-width:720px;margin:0 auto;max-height:92vh;overflow-y:auto;border-radius:26px 26px 0 0;
+  background:linear-gradient(180deg,var(--g2),var(--g1));border:1px solid var(--line);padding:10px 16px calc(env(safe-area-inset-bottom) + 20px);transform:translateY(105%);transition:transform .32s cubic-bezier(.2,.8,.2,1)}
+.sheet.on{transform:none}
+.grab{width:44px;height:5px;border-radius:3px;background:rgba(255,255,255,.4);margin:2px auto 10px}
+.dhead{display:flex;align-items:center;gap:12px}
+.dhead .ttl{flex:1}
+.dhead .ttl b{font-size:24px;font-weight:800;display:block;letter-spacing:-.3px}
+.dhead .ttl small{color:var(--mut);font-size:14px}
+.dhead svg.wi{width:54px;height:54px}
+.mini{border-radius:18px;background:rgba(0,0,0,.12);border:1px solid var(--line);overflow:hidden;margin-top:10px}
+.hours{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;padding:2px 0 4px}
+.hours::-webkit-scrollbar{display:none}
+.hr{flex:none;width:62px;border-radius:16px;background:var(--glass);border:1px solid var(--line);padding:9px 4px;text-align:center;font-size:13px;display:flex;flex-direction:column;align-items:center;gap:4px;font-variant-numeric:tabular-nums}
+.hr b{font-size:16px}
+.hr .pp{font-size:11.5px;color:var(--mut)}
+.hr .lv{width:26px;height:4px;border-radius:2px}
+.navrow{display:flex;gap:8px;margin-top:14px}
+.toast{position:fixed;left:50%;transform:translateX(-50%);top:calc(env(safe-area-inset-top) + 12px);z-index:90;background:rgba(15,35,80,.95);border:1px solid var(--line);padding:11px 18px;border-radius:16px;font-size:14px;display:none;max-width:90%}
+.muted{color:var(--mut);font-size:13px;line-height:1.45}
+.load{text-align:center;padding:80px 0;color:var(--mut)}
+.err{background:rgba(238,93,112,.25);border:1px solid rgba(238,93,112,.6);border-radius:16px;padding:14px;margin:10px 0;font-size:14px}
+.res{padding:13px 4px;border-bottom:1px solid var(--line);cursor:pointer}
 .res small{color:var(--mut)}
-.toast{position:fixed;left:50%;transform:translateX(-50%);top:calc(env(safe-area-inset-top) + 12px);z-index:60;background:#0f2550;border:1px solid var(--line);padding:10px 16px;border-radius:14px;font-size:14px;display:none;max-width:90%}
-.muted{color:var(--mut);font-size:13px;line-height:1.4}
-.load{text-align:center;padding:60px 0;color:var(--mut)}
-.err{background:rgba(232,89,107,.25);border:1px solid rgba(232,89,107,.6);border-radius:14px;padding:12px;margin:10px 0;font-size:14px}
 </style>
 </head>
 <body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+ <defs>
+  <!-- Bedienelemente -->
+  <symbol id="i-gauge" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 12l4.2-4.2"/><circle cx="12" cy="12" r="1.4" fill="currentColor"/></symbol>
+  <symbol id="i-chart" viewBox="0 0 24 24"><path d="M4 4v16h16"/><path d="M7.5 15.5l3.5-4 3 2.5 5-6.5"/><circle cx="11" cy="11.5" r="1.2" fill="currentColor"/><circle cx="14" cy="14" r="1.2" fill="currentColor"/></symbol>
+  <symbol id="i-book" viewBox="0 0 24 24"><path d="M6 4h10.5A2.5 2.5 0 0 1 19 6.5V20H8a3 3 0 0 1-3-3V5a1 1 0 0 1 1-1z"/><path d="M5 17a3 3 0 0 1 3-3h11"/><path d="M9.5 8h5"/></symbol>
+  <symbol id="i-gear" viewBox="0 0 24 24"><path d="M12 2.8l1.7 2.4 2.8-.8.6 2.9 2.7 1.1-.8 2.8 2 2-2 2 .8 2.8-2.7 1.1-.6 2.9-2.8-.8L12 21.2l-1.7-2.4-2.8.8-.6-2.9-2.7-1.1.8-2.8-2-2 2-2-.8-2.8 2.7-1.1.6-2.9 2.8.8z"/><circle cx="12" cy="12" r="3.3"/></symbol>
+  <symbol id="i-nav" viewBox="0 0 24 24"><path d="M21 3L3 10.6l7.6 2.8L13.4 21z"/></symbol>
+  <symbol id="i-refresh" viewBox="0 0 24 24"><path d="M20 12a8 8 0 1 1-2.4-5.7"/><path d="M20 4v5h-5"/></symbol>
+  <symbol id="i-back" viewBox="0 0 24 24"><path d="M15 4.5L7.5 12l7.5 7.5"/></symbol>
+  <symbol id="i-chev" viewBox="0 0 24 24"><path d="M9 5l7 7-7 7"/></symbol>
+  <symbol id="i-bell" viewBox="0 0 24 24"><path d="M6 16.5V11a6 6 0 0 1 12 0v5.5l1.6 2H4.4z"/><path d="M10 21h4"/></symbol>
+  <symbol id="i-palette" viewBox="0 0 24 24"><path d="M12 3a9 9 0 1 0 0 18c1.3 0 1.8-1.1 1.3-2-.6-1.3.3-2.4 1.6-2.4H17a4 4 0 0 0 4-4C21 7.3 17 3 12 3z"/><circle cx="7.8" cy="11" r="1.2" fill="currentColor"/><circle cx="10.5" cy="7.3" r="1.2" fill="currentColor"/><circle cx="15" cy="7.6" r="1.2" fill="currentColor"/></symbol>
+  <symbol id="i-pin" viewBox="0 0 24 24"><path d="M12 21s-6.5-5.8-6.5-11a6.5 6.5 0 0 1 13 0c0 5.2-6.5 11-6.5 11z"/><circle cx="12" cy="10" r="2.4"/></symbol>
+  <symbol id="i-layers" viewBox="0 0 24 24"><path d="M12 3.5l9 5-9 5-9-5z"/><path d="M3 13l9 5 9-5"/></symbol>
+  <symbol id="i-phone" viewBox="0 0 24 24"><rect x="7" y="2.8" width="10" height="18.4" rx="2.6"/><path d="M11 18h2"/></symbol>
+  <symbol id="i-info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 11v6"/><circle cx="12" cy="7.6" r="1.1" fill="currentColor"/></symbol>
+  <symbol id="i-mountain" viewBox="0 0 24 24"><path d="M2.5 19.5l7-11.5 4.3 6.6 2.4-3.4 5.3 8.3z"/></symbol>
+  <symbol id="i-drop" viewBox="0 0 24 24"><path d="M12 3.2s6 6.4 6 10.9a6 6 0 0 1-12 0C6 9.6 12 3.2 12 3.2z"/></symbol>
+  <symbol id="i-thermo" viewBox="0 0 24 24"><path d="M10 14V5.2a2 2 0 0 1 4 0V14a4 4 0 1 1-4 0z"/></symbol>
+  <symbol id="i-search" viewBox="0 0 24 24"><circle cx="10.8" cy="10.8" r="6.5"/><path d="M15.6 15.6l4.6 4.6"/></symbol>
+  <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.2 2"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></symbol>
+  <symbol id="i-alert" viewBox="0 0 24 24"><path d="M12 4l9 16H3z"/><path d="M12 10v4.5"/><circle cx="12" cy="17.3" r=".9" fill="currentColor"/></symbol>
+  <symbol id="i-down" viewBox="0 0 24 24"><path d="M6 8l12 9"/><path d="M18 10v7h-7"/></symbol>
+  <symbol id="i-locate" viewBox="0 0 24 24"><circle cx="12" cy="12" r="7"/><circle cx="12" cy="12" r="2.5" fill="currentColor"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/></symbol>
+  <!-- Wetter -->
+  <symbol id="w-sun" viewBox="0 0 32 32"><g stroke="#ffd25a" stroke-width="2.3" stroke-linecap="round"><path d="M16 3.5v3M16 25.5v3M3.5 16h3M25.5 16h3M7.2 7.2l2.1 2.1M22.7 22.7l2.1 2.1M7.2 24.8l2.1-2.1M22.7 9.3l2.1-2.1"/></g><circle cx="16" cy="16" r="6.3" fill="#ffd25a"/></symbol>
+  <symbol id="w-moon" viewBox="0 0 32 32"><path d="M20.5 5a10.8 10.8 0 1 0 6.6 18.6A11.8 11.8 0 0 1 20.5 5z" fill="#f4ebc4"/></symbol>
+  <symbol id="w-cloud" viewBox="0 0 32 32"><path d="M9.6 25.5h14a5.7 5.7 0 0 0 .6-11.37A7.8 7.8 0 0 0 9.1 15.8a4.9 4.9 0 0 0 .5 9.7z" fill="#eef3fb"/></symbol>
+  <symbol id="w-pc" viewBox="0 0 32 32"><g stroke="#ffd25a" stroke-width="2" stroke-linecap="round"><path d="M11 2.5v2.2M3 10.5h2.2M5.3 4.8l1.6 1.6M16.7 4.8l-1.6 1.6"/></g><circle cx="11" cy="10.5" r="4.8" fill="#ffd25a"/><path d="M11.6 27h13a5.3 5.3 0 0 0 .6-10.57A7.3 7.3 0 0 0 11.1 18a4.6 4.6 0 0 0 .5 9z" fill="#f4f7fc"/></symbol>
+  <symbol id="w-pcn" viewBox="0 0 32 32"><path d="M13 3.5a7 7 0 1 0 4.4 12.2A7.6 7.6 0 0 1 13 3.5z" fill="#f4ebc4"/><path d="M11.6 27h13a5.3 5.3 0 0 0 .6-10.57A7.3 7.3 0 0 0 11.1 18a4.6 4.6 0 0 0 .5 9z" fill="#e9eef7"/></symbol>
+  <symbol id="w-rain" viewBox="0 0 32 32"><path d="M9.6 21h14a5.7 5.7 0 0 0 .6-11.37A7.8 7.8 0 0 0 9.1 11.3a4.9 4.9 0 0 0 .5 9.7z" fill="#dde5f1"/><path d="M11.5 24l-1.6 4M16.5 24l-1.6 4M21.5 24l-1.6 4" stroke="#6fb6ff" stroke-width="2.3" stroke-linecap="round"/></symbol>
+  <symbol id="w-drizzle" viewBox="0 0 32 32"><path d="M9.6 21h14a5.7 5.7 0 0 0 .6-11.37A7.8 7.8 0 0 0 9.1 11.3a4.9 4.9 0 0 0 .5 9.7z" fill="#e3e9f3"/><path d="M12 25l-.8 2M17 25l-.8 2M22 25l-.8 2" stroke="#8cc6ff" stroke-width="2.2" stroke-linecap="round"/></symbol>
+  <symbol id="w-snow" viewBox="0 0 32 32"><path d="M9.6 21h14a5.7 5.7 0 0 0 .6-11.37A7.8 7.8 0 0 0 9.1 11.3a4.9 4.9 0 0 0 .5 9.7z" fill="#e3e9f3"/><circle cx="11.5" cy="25.5" r="1.6" fill="#fff"/><circle cx="16.5" cy="28" r="1.6" fill="#fff"/><circle cx="21.5" cy="25.5" r="1.6" fill="#fff"/></symbol>
+  <symbol id="w-thunder" viewBox="0 0 32 32"><path d="M9.6 20h14a5.7 5.7 0 0 0 .6-11.37A7.8 7.8 0 0 0 9.1 10.3a4.9 4.9 0 0 0 .5 9.7z" fill="#c9d2e1"/><path d="M17 18.5l-4.5 7h3.6l-1.6 5.5 6.2-8h-3.8l2-4.5z" fill="#ffd25a"/></symbol>
+  <symbol id="w-fog" viewBox="0 0 32 32"><path d="M7 12h18M4.5 17h23M7.5 22h17M11 27h10" stroke="#e3e9f3" stroke-width="2.4" stroke-linecap="round"/></symbol>
+ </defs>
+</svg>
+
 <div class="wrap">
   <div class="top">
-    <div class="place" id="placeBtn"><svg width="22" height="22" viewBox="0 0 24 24" fill="#fff"><path d="M21 3 3 10.5l7.5 2.5L13 21z"/></svg><span id="placeName">Standort wird gesucht</span></div>
-    <button class="btn sm" id="refreshBtn" aria-label="Aktualisieren">↻</button>
+    <button class="place" id="placeBtn"><svg viewBox="0 0 24 24"><use href="#i-nav"/></svg><span id="placeName">Standort …</span></button>
+    <button class="round" id="refreshBtn" aria-label="Aktualisieren"><svg class="i"><use href="#i-refresh"/></svg></button>
   </div>
 
-  <!-- Übersicht -->
-  <section class="view on" id="v-home">
-    <div id="homeBody"><div class="load">Lade Luftdruck und Wetter …</div></div>
-  </section>
+  <section class="view on" id="v-home"><div id="homeBody"><div class="load">Lade Luftdruck und Wetter …</div></div></section>
 
-  <!-- Vorschau -->
   <section class="view" id="v-fc">
-    <h2>16 Tage Vorschau</h2>
-    <p class="muted" style="margin:-4px 4px 10px">Die Farbe zeigt den stärksten Druckabfall des Tages. Ab etwa Tag 7 ist die Vorhersage nur noch ein grober Trend.</p>
+    <div class="bar2">
+      <div class="legend"><span><i style="background:var(--l1)"></i>Leicht</span><span><i style="background:var(--l2)"></i>Mäßig</span><span><i style="background:var(--l3)"></i>Stark</span><span><i style="background:var(--up)"></i>Anstieg</span></div>
+      <div class="seg" id="zoomSeg"><button data-z="2d">36 h</button><button data-z="7d">7 Tage</button><button data-z="all">Alles</button></div>
+    </div>
+    <div class="chartbox" id="chartbox">
+      <div class="readout" id="readout"></div>
+      <div class="scroller" id="scroller"></div>
+      <svg class="yaxis" id="yaxis"></svg>
+      <button class="round nowbtn" id="nowBtn" aria-label="Jetzt"><svg class="i"><use href="#i-clock"/></svg></button>
+    </div>
+    <p class="muted" style="margin:8px 4px 0">Gestrichelt: Verlauf. Durchgezogen: Vorhersage. Grüne Linie: jetzt. Zum Ablesen wischen oder tippen.</p>
+    <h3>16 Tage <small>Tippen für Details</small></h3>
     <div class="days" id="fcList"></div>
   </section>
 
-  <!-- Tagebuch -->
   <section class="view" id="v-log">
-    <div class="card" style="margin-top:6px">
-      <div style="font-weight:700;font-size:17px">Wie geht es deinem Kopf heute?</div>
+    <div class="card">
+      <div style="font-weight:800;font-size:19px">Wie geht es deinem Kopf heute?</div>
       <div class="feel" id="todayFeel"></div>
     </div>
-    <h2>Auswertung</h2>
+    <h3>Auswertung</h3>
     <div class="card stat" id="statBox"></div>
-    <h2>Verlauf</h2>
-    <p class="muted" style="margin:-4px 4px 6px">Tippe auf ein Gesicht, um einen Tag nachzutragen. Tage ohne Eintrag zählen nicht mit.</p>
+    <h3>Verlauf <small>Tippen zum Nachtragen</small></h3>
     <div class="log" id="logList"></div>
   </section>
 
-  <!-- Einstellungen -->
   <section class="view" id="v-set">
-    <h2>Warnungen</h2>
-    <div class="card">
-      <div class="row"><div class="lbl">Push Warnung<small id="pushInfo">Benachrichtigung morgens und abends, wenn ein Druckabfall kommt</small></div>
-        <label class="sw"><input type="checkbox" id="pushToggle"><span></span></label></div>
-      <div class="row"><div class="lbl">Warnen ab<small>Stufe des Druckabfalls</small></div>
-        <select id="levelSel"><option value="2">Mäßig und Stark</option><option value="3">Nur Stark</option></select></div>
-      <div class="row"><div class="lbl">Testnachricht<small>Prüft, ob Benachrichtigungen ankommen</small></div>
-        <button class="btn sm" id="pushTest">Senden</button></div>
-    </div>
-    <h2>Standort</h2>
-    <div class="card">
-      <div class="row"><div class="lbl">GPS verwenden<small>Aktueller Standort bei jedem Öffnen</small></div>
-        <label class="sw"><input type="checkbox" id="gpsToggle" checked><span></span></label></div>
-      <div class="row"><div class="lbl">Ort suchen<small>Fester Ort statt GPS</small></div>
-        <button class="btn sm" id="searchOpen">Suchen</button></div>
-    </div>
-    <h2>Stufen</h2>
-    <div class="card muted" style="font-size:14px">
-      Bewertet wird die Änderung des Luftdrucks innerhalb von 3 Stunden:<br>
-      <b style="color:var(--l1)">Leicht</b> fällt um 0,6 bis 1 hPa · <b style="color:var(--l2)">Mäßig</b> um 1 bis 2 hPa · <b style="color:var(--l3)">Stark</b> um mehr als 2 hPa · <b style="color:var(--up)">Anstieg</b> steigt um mehr als 1 hPa.<br>Für die Tagesfarbe zählt zusätzlich der Abfall über 24 Stunden: ab 5 hPa Mäßig, ab 8 hPa Stark.<br><br>
-      Daten: Open Meteo (Wettermodelle von DWD, ECMWF u. a.). Die Höhe stammt vom GPS deines Handys und aus einem Geländemodell.
-    </div>
-    <h2>Gerät</h2>
-    <div class="card">
-      <div class="row"><div class="lbl">Gerätecode<small>Damit kannst du dein Tagebuch auf einem zweiten Gerät öffnen</small></div>
-        <button class="btn sm" id="codeShow">Anzeigen</button></div>
-      <div class="row"><div class="lbl">Code eingeben<small>Tagebuch von einem anderen Gerät übernehmen</small></div>
-        <button class="btn sm" id="codeEnter">Eingeben</button></div>
-    </div>
-    <p class="muted" style="margin:16px 4px">Hinweis: Kopfwetter ersetzt keine ärztliche Beratung.</p>
+    <h3 style="margin-top:4px">Einstellungen</h3>
+    <div class="group" id="setMain"></div>
+    <p class="muted" style="margin:16px 4px">Kopfwetter ersetzt keine ärztliche Beratung.</p>
   </section>
 </div>
 
-<nav class="tabs">
-  <button data-v="home" class="on"><span>📈</span>Druck</button>
-  <button data-v="fc"><span>📅</span>Vorschau</button>
-  <button data-v="log"><span>🤕</span>Tagebuch</button>
-  <button data-v="set"><span>⚙️</span>Mehr</button>
+<nav class="tabs" id="tabs">
+  <button data-v="home" class="on"><svg class="i"><use href="#i-gauge"/></svg>Dashboard</button>
+  <button data-v="fc"><svg class="i"><use href="#i-chart"/></svg>Vorhersage</button>
+  <button data-v="log"><svg class="i"><use href="#i-book"/></svg>Tagebuch</button>
+  <button data-v="set"><svg class="i"><use href="#i-gear"/></svg>Einstellungen</button>
 </nav>
 
-<div class="modal" id="modal"><div class="sheet" id="sheet"></div></div>
+<div class="page" id="page"><div class="wrap" id="pageBody"></div></div>
+<div class="sheetbg" id="sheetbg"></div>
+<div class="sheet" id="sheet"></div>
 <div class="toast" id="toast"></div>
 
 <script>
 "use strict";
 const FN = "https://ladedtlgqknszotcgvfq.supabase.co/functions/v1/kopfwetter";
 const DEFAULT_LOC = {lat:48.1374, lon:11.5755, name:"München"};
-const LV = {name:["Ruhig","Leicht","Mäßig","Stark"], col:["rgba(255,255,255,0)","#f5d94a","#f2a65a","#e8596b"]};
-const UPCOL = "#7b8cf0";
+const LV = {name:["Ruhig","Leicht","Mäßig","Stark"], col:["transparent","#f5d94a","#f2a65a","#ee5d70"]};
+const UPCOL = "#8a9bff";
 const WD = ["So","Mo","Di","Mi","Do","Fr","Sa"];
+const WDL = ["Sonntag","Montag","Dienstag","Mittwoch","Donnerstag","Freitag","Samstag"];
+const THEMES = [
+  ["dynamic","Dynamic","Wechselt je nach Tageszeit die Farben"],
+  ["classic","Classic","Kräftiges Blau als Grundton"],
+  ["dawn","Dawn","Farbverlauf der Morgendämmerung"],
+  ["sunny","Sunny","Frisches Blau des Tageshimmels"],
+  ["sunset","Sunset","Warme Farben der goldenen Stunde"],
+  ["midnight","Midnight","Tiefes Blau der stillen Nacht"],
+  ["aurora","Aurora","Schimmern des Nordlichts"],
+  ["coral","Coral","Warmes Leuchten eines Korallenriffs"],
+  ["forest","Forest","Ruhiges Grün des tiefen Waldes"]
+];
+const SW = {classic:["#1b48a6","#5b9af0"],dawn:["#2c2f5c","#c08a8f"],sunny:["#1c4180","#7fa3d2"],sunset:["#262a58","#d29a76"],midnight:["#070b1f","#1f2a55"],aurora:["#0a1a2e","#1f7a6c"],coral:["#2a1220","#b4614a"],forest:["#0c1f15","#3c6a45"]};
+const INTERVALS = [[0,"Nur manuell"],[5,"Alle 5 Minuten"],[15,"Alle 15 Minuten"],[30,"Alle 30 Minuten"],[60,"Alle 60 Minuten"]];
 const $ = s => document.querySelector(s);
+const ic = (n, cls) => `<svg class="${cls||"i"}"><use href="#${n}"/></svg>`;
 
-/* ---------- Speicher ---------- */
 const store = {
   get(k, d){ try{ const v = localStorage.getItem("kw_"+k); return v==null ? d : JSON.parse(v); }catch(e){ return d; } },
   set(k, v){ try{ localStorage.setItem("kw_"+k, JSON.stringify(v)); }catch(e){} }
 };
 let S = {
-  loc: store.get("loc", null),          // {lat,lon,name}
-  gps: store.get("gps", true),
-  diary: store.get("diary", {}),        // {"2026-11-22": 2}
-  token: store.get("token", null),
-  level: store.get("level", 2),
-  data: null, pos: null, zoom: store.get("zoom","2d")
+  loc: store.get("loc", null), gps: store.get("gps", true), diary: store.get("diary", {}),
+  token: store.get("token", null), level: store.get("level", 2), theme: store.get("theme","dynamic"),
+  interval: store.get("interval", 15), zoom: store.get("zoom","2d"), data: null, pos: null, hl: null, pushOn:false, loadedAt: 0
 };
 
 function toast(t, ms){ const e=$("#toast"); e.textContent=t; e.style.display="block"; clearTimeout(toast.h); toast.h=setTimeout(()=>e.style.display="none", ms||2600); }
 const fmt1 = n => n.toFixed(1).replace(".",",");
 const fmt0 = n => Math.round(n).toString();
-function esc(s){ return String(s).replace(/[&<>"]/g, c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c])); }
+function esc(s){ return String(s).replace(/[&<>"']/g, c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c])); }
+const dOf = day => new Date(day+"T12:00:00");
+const dLabel = day => { const d=dOf(day); return d.getDate()+"."+(d.getMonth()+1)+"."; };
 
-/* ---------- Wetter Symbole ---------- */
-function wIcon(code, day){
-  if(code==null) return "";
-  if(code===0) return day===0 ? "🌙" : "☀️";
-  if(code===1) return day===0 ? "🌙" : "🌤️";
-  if(code===2) return day===0 ? "☁️" : "⛅";
-  if(code===3) return "☁️";
-  if(code===45||code===48) return "🌫️";
-  if(code>=51&&code<=57) return "🌦️";
-  if(code>=61&&code<=67) return "🌧️";
-  if(code>=71&&code<=77) return "🌨️";
-  if(code>=80&&code<=82) return "🌦️";
-  if(code===85||code===86) return "🌨️";
-  if(code>=95) return "⛈️";
-  return "☁️";
+/* ---------- Farbthema ---------- */
+function themeNow(){
+  if(S.theme!=="dynamic") return S.theme;
+  const h = new Date().getHours();
+  return h>=5&&h<8 ? "dawn" : h>=8&&h<17 ? "sunny" : h>=17&&h<20 ? "sunset" : "midnight";
 }
+function applyTheme(){
+  const t = themeNow();
+  document.documentElement.dataset.theme = t;
+  const m = document.querySelector('meta[name=theme-color]'); if(m) m.content = SW[t][0];
+}
+applyTheme(); setInterval(applyTheme, 5*60*1000);
+
+/* ---------- Wetter ---------- */
+function wKey(code, day){
+  if(code==null) return "w-cloud";
+  if(code===0) return day===0 ? "w-moon" : "w-sun";
+  if(code===1||code===2) return day===0 ? "w-pcn" : "w-pc";
+  if(code===3) return "w-cloud";
+  if(code===45||code===48) return "w-fog";
+  if(code>=51&&code<=57) return "w-drizzle";
+  if((code>=61&&code<=67)||(code>=80&&code<=82)) return "w-rain";
+  if((code>=71&&code<=77)||code===85||code===86) return "w-snow";
+  if(code>=95) return "w-thunder";
+  return "w-cloud";
+}
+const wIcon = (code, day, cls) => ic(wKey(code, day), cls||"wi");
 function wText(code){
   const m={0:"Klar",1:"Überwiegend klar",2:"Teils bewölkt",3:"Bedeckt",45:"Nebel",48:"Reifnebel",51:"Leichter Niesel",53:"Niesel",55:"Starker Niesel",56:"Gefrierender Niesel",57:"Gefrierender Niesel",61:"Leichter Regen",63:"Regen",65:"Starker Regen",66:"Gefrierender Regen",67:"Gefrierender Regen",71:"Leichter Schnee",73:"Schnee",75:"Starker Schnee",77:"Schneegriesel",80:"Regenschauer",81:"Regenschauer",82:"Starke Schauer",85:"Schneeschauer",86:"Schneeschauer",95:"Gewitter",96:"Gewitter mit Hagel",99:"Gewitter mit Hagel"};
   return m[code]||"";
 }
-
-/* ---------- Druck Stufen ---------- */
-function level(d){ // Änderung in 3 h
-  if(d<=-2) return 3; if(d<=-1) return 2; if(d<=-0.6) return 1; if(d>=1) return -1; return 0;
-}
+function level(d){ if(d<=-2) return 3; if(d<=-1) return 2; if(d<=-0.6) return 1; if(d>=1) return -1; return 0; }
 
 /* ---------- Standort ---------- */
 function getGPS(){
   return new Promise((res, rej)=>{
     if(!navigator.geolocation) return rej(new Error("kein GPS"));
-    navigator.geolocation.getCurrentPosition(p=>res(p), e=>rej(e), {enableHighAccuracy:true, timeout:15000, maximumAge:120000});
+    navigator.geolocation.getCurrentPosition(res, rej, {enableHighAccuracy:true, timeout:15000, maximumAge:60000});
   });
 }
 async function reverseName(lat, lon){
@@ -266,24 +357,21 @@ async function resolveLocation(){
       S.pos = p.coords;
       const lat = +p.coords.latitude.toFixed(4), lon = +p.coords.longitude.toFixed(4);
       const moved = !S.loc || Math.abs(S.loc.lat-lat)>0.02 || Math.abs(S.loc.lon-lon)>0.02 || !S.loc.name;
-      if(moved){ S.loc = {lat, lon, name: await reverseName(lat, lon)}; }
-      else { S.loc = {lat, lon, name: S.loc.name}; }
+      S.loc = {lat, lon, name: moved ? await reverseName(lat, lon) : S.loc.name};
       store.set("loc", S.loc);
       return;
-    }catch(e){
-      if(!S.loc){ S.loc = {...DEFAULT_LOC}; toast("GPS nicht verfügbar, zeige München"); }
-    }
+    }catch(e){ if(!S.loc){ S.loc = {...DEFAULT_LOC}; toast("GPS nicht verfügbar, zeige München"); } }
   }
   if(!S.loc) S.loc = {...DEFAULT_LOC};
 }
 
-/* ---------- Daten laden ---------- */
+/* ---------- Daten ---------- */
 async function loadWeather(){
   const {lat, lon} = S.loc;
   const u = "https://api.open-meteo.com/v1/forecast?latitude="+lat+"&longitude="+lon+
-    "&hourly=pressure_msl,surface_pressure,temperature_2m,precipitation,weather_code,is_day"+
-    "&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_sum,precipitation_probability_max"+
-    "&current=temperature_2m,pressure_msl,surface_pressure,weather_code,is_day,apparent_temperature"+
+    "&hourly=pressure_msl,surface_pressure,temperature_2m,precipitation,precipitation_probability,weather_code,is_day,wind_speed_10m"+
+    "&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_sum,precipitation_probability_max,sunrise,sunset,wind_speed_10m_max"+
+    "&current=temperature_2m,pressure_msl,surface_pressure,weather_code,is_day,apparent_temperature,relative_humidity_2m,wind_speed_10m"+
     "&past_days=92&forecast_days=16&timezone=auto";
   const r = await fetch(u);
   if(!r.ok) throw new Error("Wetterdienst antwortet nicht ("+r.status+")");
@@ -291,46 +379,34 @@ async function loadWeather(){
   store.set("cache", {t:Date.now(), loc:S.loc, j});
   return j;
 }
-
 function prep(j){
-  const h = j.hourly, n = h.time.length;
-  const off = j.utc_offset_seconds||0;
+  const h = j.hourly, n = h.time.length, off = j.utc_offset_seconds||0;
   const nowLocal = new Date(Date.now()+off*1000).toISOString().slice(0,13);
-  let nowI = h.time.findIndex(t=>t.slice(0,13)===nowLocal);
-  if(nowI<0) nowI = n-1;
-  const P = h.pressure_msl.map((v,i)=> v==null ? null : v);
-  // Lücken füllen
+  let nowI = h.time.findIndex(t=>t.slice(0,13)===nowLocal); if(nowI<0) nowI = n-1;
+  const P = h.pressure_msl.slice();
   for(let i=0;i<n;i++){ if(P[i]==null){ let a=i-1; while(a>=0&&P[a]==null)a--; let b=i+1; while(b<n&&P[b]==null)b++; P[i]= a>=0&&b<n ? P[a]+(P[b]-P[a])*(i-a)/(b-a) : (a>=0?P[a]:(b<n?P[b]:1013)); } }
-  const hourOf = t => +t.slice(11,13);
   const blocks = [];
-  for(let i=0;i<n-3;i++){
-    if(hourOf(h.time[i])%3!==0) continue;
-    const d = P[i+3]-P[i];
-    blocks.push({i, d, lv: level(d)});
-  }
-  // Tageswerte
+  for(let i=0;i<n-3;i++){ if(+h.time[i].slice(11,13)%3!==0) continue; const d=P[i+3]-P[i]; blocks.push({i, d, lv:level(d)}); }
   const days = {};
   for(const b of blocks){
     const day = h.time[b.i].slice(0,10);
-    const o = days[day] || (days[day]={max:0, drop:0, up:false});
+    const o = days[day] || (days[day]={max:0, drop:0, dropI:b.i, up:false});
     if(b.lv>o.max) o.max=b.lv;
     if(b.lv===-1) o.up=true;
-    if(b.d<o.drop) o.drop=b.d;
+    if(b.d<o.drop){ o.drop=b.d; o.dropI=b.i; }
   }
   for(const day in days){
     const i0 = h.time.indexOf(day+"T00:00");
-    if(i0>=0 && i0+24<n){ const d24 = P[i0+24]-P[i0]; const o = days[day]; o.d24 = d24;
-      const l24 = d24<=-8 ? 3 : d24<=-5 ? 2 : 0; if(l24>o.max){ o.max = l24; } }
+    if(i0>=0 && i0+24<n){ const d24=P[i0+24]-P[i0], o=days[day]; o.d24=d24; const l24 = d24<=-8?3:d24<=-5?2:0; if(l24>o.max) o.max=l24; }
   }
-  return {j, h, n, P, nowI, blocks, days, off};
+  return {j, h, n, P, nowI, blocks, days, off, today: h.time[nowI].slice(0,10)};
 }
+function blockAt(i){ return S.data.blocks.find(b=>b.i<=i && i<b.i+3); }
 
 /* ---------- Warnung ---------- */
 function upcoming(D, hours){
-  const end = D.nowI+hours;
-  const list = D.blocks.filter(b=>b.i+3>D.nowI && b.i<end && b.lv>=2);
+  const list = D.blocks.filter(b=>b.i+3>D.nowI && b.i<D.nowI+hours && b.lv>=2);
   if(!list.length) return null;
-  // Fenster zusammenfassen
   const win=[]; let cur=null;
   for(const b of list){
     if(cur && b.i===cur.e){ cur.e=b.i+3; cur.lv=Math.max(cur.lv,b.lv); cur.drop+=b.d; }
@@ -340,235 +416,297 @@ function upcoming(D, hours){
   return win[0];
 }
 function relDay(D, i){
-  const t = D.h.time[i], today = D.h.time[D.nowI].slice(0,10);
-  const dd = Math.round((Date.parse(t.slice(0,10))-Date.parse(today))/864e5);
+  const day = D.h.time[i].slice(0,10);
+  const dd = Math.round((Date.parse(day)-Date.parse(D.today))/864e5);
   if(dd===0) return "Heute"; if(dd===1) return "Morgen"; if(dd===2) return "Übermorgen";
-  const dt = new Date(t.slice(0,10)+"T12:00:00"); return WD[dt.getDay()]+" "+dt.getDate()+"."+(dt.getMonth()+1)+".";
+  return WD[dOf(day).getDay()]+" "+dLabel(day);
 }
 
-/* ---------- Übersicht ---------- */
+/* ---------- Tacho ---------- */
+function gaugeSVG(p){
+  const lo=970, hi=1050, cx=85, cy=82, r=66;
+  const ang = v => Math.PI*(1 - (Math.min(hi,Math.max(lo,v))-lo)/(hi-lo));
+  const pt = (v,rr) => [cx+rr*Math.cos(ang(v)), cy-rr*Math.sin(ang(v))];
+  const arc = (a,b,col,w) => { const [x1,y1]=pt(a,r), [x2,y2]=pt(b,r); return `<path d="M${x1.toFixed(1)} ${y1.toFixed(1)}A${r} ${r} 0 0 1 ${x2.toFixed(1)} ${y2.toFixed(1)}" stroke="${col}" stroke-width="${w}" fill="none" stroke-linecap="round"/>`; };
+  let s = `<svg viewBox="0 0 170 100" width="170" height="100">`;
+  s += arc(lo,1000,"#7fb8ff",10) + arc(1000.5,1019.5,"rgba(255,255,255,.55)",10) + arc(1020,hi,"#ffd25a",10);
+  for(let v=980; v<=1040; v+=10){ const [a,b]=pt(v,r-11), [c,d]=pt(v,r-17); s += `<line x1="${a}" y1="${b}" x2="${c}" y2="${d}" stroke="rgba(255,255,255,.6)" stroke-width="1.6"/>`; }
+  const [nx,ny] = pt(p, r-14);
+  s += `<line x1="${cx}" y1="${cy}" x2="${nx.toFixed(1)}" y2="${ny.toFixed(1)}" stroke="#fff" stroke-width="3.5" stroke-linecap="round"/><circle cx="${cx}" cy="${cy}" r="6" fill="#fff"/>`;
+  s += `<text x="12" y="98" fill="rgba(255,255,255,.75)" font-size="11">Tief</text><text x="158" y="98" fill="rgba(255,255,255,.75)" font-size="11" text-anchor="end">Hoch</text></svg>`;
+  return s;
+}
+
+/* ---------- Kleine Druckkurve (Dashboard, Tagesansicht) ---------- */
+function miniChart(D, i0, hours, opt){
+  opt = opt||{};
+  const W = opt.w || 340, H = opt.h || 150, top = 16, bot = 26, left = 6, right = 6;
+  const i1 = Math.min(D.n-1, i0+hours);
+  const seg = D.P.slice(i0, i1+1);
+  let mn = Math.min(...seg), mx = Math.max(...seg);
+  if(mx-mn<4){ const m=(mx+mn)/2; mn=m-2; mx=m+2; }
+  mn -= 0.6; mx += 0.6;
+  const X = i => left + (i-i0)/(i1-i0)*(W-left-right);
+  const Y = v => top + (mx-v)/(mx-mn)*(H-top-bot);
+  let s = `<svg viewBox="0 0 ${W} ${H}" width="100%" style="display:block">`;
+  for(const b of D.blocks){
+    if(b.i+3<=i0 || b.i>=i1 || b.lv===0) continue;
+    const x0 = X(Math.max(i0,b.i)), x1 = X(Math.min(i1,b.i+3));
+    s += `<rect x="${x0}" y="${top-6}" width="${x1-x0}" height="${H-top-bot+6}" fill="${b.lv===-1?UPCOL:LV.col[b.lv]}" opacity=".38"/>`;
+    s += `<rect x="${x0}" y="${top-10}" width="${x1-x0}" height="4" fill="${b.lv===-1?UPCOL:LV.col[b.lv]}"/>`;
+  }
+  for(let i=i0;i<=i1;i++){
+    const hr = +D.h.time[i].slice(11,13);
+    if(hr%6===0 && i>i0 && i<i1) s += `<line x1="${X(i)}" x2="${X(i)}" y1="${top-6}" y2="${H-bot}" stroke="rgba(255,255,255,.18)" stroke-dasharray="3 4"/>`;
+    if(hr%6===0) s += `<text x="${X(i)}" y="${H-8}" fill="rgba(255,255,255,.8)" font-size="11" text-anchor="${i===i0?"start":i===i1?"end":"middle"}">${hr===0&&i>i0?WD[dOf(D.h.time[i].slice(0,10)).getDay()]:hr+" h"}</text>`;
+  }
+  let d=""; for(let i=i0;i<=i1;i++) d += (i>i0?"L":"M")+X(i).toFixed(1)+" "+Y(D.P[i]).toFixed(1);
+  s += `<path d="${d} L${X(i1)} ${H-bot} L${X(i0)} ${H-bot}Z" fill="rgba(255,255,255,.08)"/>`;
+  s += `<path d="${d}" fill="none" stroke="#fff" stroke-width="2.6" stroke-linejoin="round"/>`;
+  if(D.nowI>=i0 && D.nowI<=i1) s += `<line x1="${X(D.nowI)}" x2="${X(D.nowI)}" y1="${top-10}" y2="${H-bot}" stroke="var(--now)" stroke-width="2"/><circle cx="${X(D.nowI)}" cy="${Y(D.P[D.nowI])}" r="4.5" fill="#fff"/>`;
+  const iMin = i0 + seg.indexOf(Math.min(...seg)), iMax = i0 + seg.indexOf(Math.max(...seg));
+  s += `<text x="${Math.min(W-30,Math.max(30,X(iMax)))}" y="${Y(D.P[iMax])-6}" fill="#fff" font-size="11" font-weight="700" text-anchor="middle">${fmt0(D.P[iMax])}</text>`;
+  s += `<text x="${Math.min(W-30,Math.max(30,X(iMin)))}" y="${Y(D.P[iMin])+15}" fill="#fff" font-size="11" font-weight="700" text-anchor="middle">${fmt0(D.P[iMin])}</text>`;
+  return s + `</svg>`;
+}
+
+/* ---------- Dashboard ---------- */
 function renderHome(){
   const D = S.data, j = D.j, c = j.current||{};
   const pNow = c.pressure_msl ?? D.P[D.nowI];
-  const p3 = D.P[Math.max(0,D.nowI-3)];
-  const tr = pNow - p3;
-  const arrow = tr<=-0.6 ? "↘" : tr>=0.6 ? "↗" : "→";
-  const kind = pNow>=1020 ? "Hochdruck" : pNow<=1005 ? "Tiefdruck" : "Normaler Druck";
+  const tr = pNow - D.P[Math.max(0,D.nowI-3)];
+  const kind = pNow>=1020 ? "Hochdruck" : pNow<=1005 ? "Tiefdruck" : "Normaler Luftdruck";
+  const trTxt = tr<=-0.6 ? "fällt" : tr>=0.6 ? "steigt" : "stabil";
+  const trRot = tr<=-0.6 ? 0 : tr>=0.6 ? -90 : -45;
   const w = upcoming(D, 48);
   let warn;
   if(w){
     const t0 = D.h.time[w.s].slice(11,16), t1 = D.h.time[Math.min(w.e,D.n-1)].slice(11,16);
-    warn = `<div class="warn w${w.lv}"><div class="ic">${w.lv===3?"⚠️":"🔶"}</div><div><b>${relDay(D,w.s)}: ${LV.name[w.lv]}er Druckabfall</b>${t0} bis ${t1} Uhr fällt der Luftdruck um ${fmt1(Math.abs(w.drop))} hPa. Viel trinken, regelmäßig essen und gut schlafen kann helfen.</div></div>`;
+    warn = `<div class="warn w${w.lv}"><div class="ico">${ic("i-alert")}</div><div><b>${relDay(D,w.s)}: ${LV.name[w.lv]}er Druckabfall</b>${t0} bis ${t1} Uhr fällt der Luftdruck um ${fmt1(Math.abs(w.drop))} hPa. Viel trinken, regelmäßig essen und gut schlafen kann helfen.</div></div>`;
   }else{
-    warn = `<div class="warn w0"><div class="ic">✅</div><div><b>Keine stärkeren Druckwechsel</b>In den nächsten 48 Stunden ist kein mäßiger oder starker Druckabfall zu erwarten.</div></div>`;
+    warn = `<div class="warn w0"><div class="ico">${ic("i-check")}</div><div><b>Keine stärkeren Druckwechsel</b>In den nächsten 48 Stunden ist kein mäßiger oder starker Druckabfall zu erwarten.</div></div>`;
   }
-  // Höhe
-  let alt = "";
   const gpsAlt = S.pos && S.pos.altitude!=null ? S.pos.altitude : null;
-  if(gpsAlt!=null){
-    alt = `<div class="v">${fmt0(gpsAlt)}<small>m</small></div><div class="s">GPS Höhe${S.pos.altitudeAccuracy?` (± ${fmt0(S.pos.altitudeAccuracy)} m)`:""} · Gelände ${fmt0(j.elevation)} m ü. NN</div>`;
-  }else{
-    alt = `<div class="v">${fmt0(j.elevation)}<small>m</small></div><div class="s">Gelände ü. NN${S.gps?" · GPS Höhe nicht verfügbar":" · fester Ort"}</div>`;
-  }
+  const alt = gpsAlt!=null
+    ? `<div class="v">${fmt0(gpsAlt)}<small>m</small></div><div class="s">GPS${S.pos.altitudeAccuracy?` ± ${fmt0(S.pos.altitudeAccuracy)} m`:""} · Gelände ${fmt0(j.elevation)} m</div>`
+    : `<div class="v">${fmt0(j.elevation)}<small>m</small></div><div class="s">Gelände über Meer${S.gps?" · GPS Höhe nach Standortfreigabe":" · fester Ort"}</div>`;
   const sp = c.surface_pressure ?? (j.hourly.surface_pressure||[])[D.nowI];
+  const today = D.today, feel = S.diary[today];
   $("#homeBody").innerHTML = `
-    <div class="cards">
-      <div class="card"><div class="k">Luftdruck (Meereshöhe)</div><div class="v">${fmt1(pNow)}<small>hPa ${arrow}</small></div><div class="s">${kind} · ${tr>=0?"+":"↓ "}${fmt1(Math.abs(tr))} hPa in 3 h</div></div>
-      <div class="card"><div class="k">Wetter jetzt</div><div class="v">${c.temperature_2m!=null?fmt0(c.temperature_2m):"?"}<small>°C</small> <span style="font-size:28px">${wIcon(c.weather_code,c.is_day)}</span></div><div class="s">${wText(c.weather_code)}${c.apparent_temperature!=null?" · gefühlt "+fmt0(c.apparent_temperature)+"°":""}</div></div>
-      <div class="card"><div class="k">Deine Höhe</div>${alt}</div>
-      <div class="card"><div class="k">Druck bei dir</div><div class="v">${sp!=null?fmt0(sp):"?"}<small>hPa</small></div><div class="s">tatsächlicher Druck auf deiner Höhe</div></div>
+    <div class="card gauge">
+      <div>${gaugeSVG(pNow)}</div>
+      <div><div class="k">Luftdruck</div>
+        <div class="big">${fmt1(pNow)} <small>hPa</small></div>
+        <div class="trend"><svg class="i" style="width:16px;height:16px;transform:rotate(${trRot}deg)"><use href="#i-down"/></svg>${trTxt} · ${fmt1(Math.abs(tr))} hPa/3 h</div>
+        <div class="s">${kind} · Meereshöhe</div></div>
     </div>
     ${warn}
-    <div class="legend"><span><i style="background:var(--l1)"></i>Leicht</span><span><i style="background:var(--l2)"></i>Mäßig</span><span><i style="background:var(--l3)"></i>Stark</span><span><i style="background:var(--up)"></i>Anstieg</span><span>🤕 Kopfschmerz</span>
-      <div class="zoom"><button data-z="2d">1,5 T</button><button data-z="7d">7 T</button><button data-z="all">Alles</button></div></div>
-    <div class="chartbox" id="chartbox">
-      <div class="readout" id="readout"></div>
-      <div class="scroller" id="scroller"></div>
-      <svg class="yaxis" id="yaxis"></svg>
-      <button class="nowbtn" id="nowBtn" aria-label="Jetzt">⟲</button>
+    <div class="grid2">
+      <div class="card"><div class="k">${ic("i-thermo")}Wetter jetzt</div><div class="v">${c.temperature_2m!=null?fmt0(c.temperature_2m):"?"}<small>°C</small><span style="margin-left:auto">${wIcon(c.weather_code,c.is_day,"wi")}</span></div><div class="s">${wText(c.weather_code)}${c.apparent_temperature!=null?" · gefühlt "+fmt0(c.apparent_temperature)+"°":""}</div></div>
+      <div class="card"><div class="k">${ic("i-mountain")}Deine Höhe</div>${alt}</div>
+      <div class="card"><div class="k">${ic("i-gauge")}Druck bei dir</div><div class="v">${sp!=null?fmt0(sp):"?"}<small>hPa</small></div><div class="s">tatsächlicher Druck auf deiner Höhe</div></div>
+      <div class="card"><div class="k">${ic("i-drop")}Luftfeuchte</div><div class="v">${c.relative_humidity_2m!=null?fmt0(c.relative_humidity_2m):"?"}<small>%</small></div><div class="s">Wind ${c.wind_speed_10m!=null?fmt0(c.wind_speed_10m):"?"} km/h</div></div>
     </div>
-    <p class="muted" style="margin:8px 4px">Gestrichelt: gemessener Verlauf der letzten 92 Tage. Durchgezogen: Vorhersage für 16 Tage. Grüne Linie: jetzt. Zum Ablesen über die Grafik wischen oder tippen.</p>
-  `;
-  document.querySelectorAll(".zoom button").forEach(b=>{
-    b.classList.toggle("on", b.dataset.z===S.zoom);
-    b.onclick = ()=>{ S.zoom=b.dataset.z; store.set("zoom",S.zoom); renderHome(); };
-  });
-  drawChart();
+    <h3>Nächste 24 Stunden <small id="goFc" style="cursor:pointer">Alle Details ›</small></h3>
+    <div class="card" style="padding:10px 10px 4px">${miniChart(D, D.nowI, 24, {w:340,h:150})}</div>
+    <h3>Kopfschmerzen heute?</h3>
+    <div class="feel" id="homeFeel">${FACES.map((f,i)=>`<button data-v="${i}" class="${feel===i?"on":""}"><i class="dot${i}"></i>${f}</button>`).join("")}</div>
+    <p class="muted" style="margin:14px 4px 0">Stand ${new Date(S.loadedAt).toLocaleTimeString("de-DE",{hour:"2-digit",minute:"2-digit"})} Uhr · Daten: Open Meteo</p>`;
+  $("#goFc").onclick = ()=> show("fc");
+  $("#homeFeel").querySelectorAll("button").forEach(b=> b.onclick = ()=> setDiary(today, +b.dataset.v));
 }
 
-/* ---------- Grafik ---------- */
+/* ---------- Große Grafik ---------- */
 let CH = null;
 function drawChart(focusIndex){
-  const D = S.data, n = D.n, P = D.P, h = D.h;
+  const D = S.data; if(!D) return;
+  const n = D.n, P = D.P, h = D.h;
   const box = $("#chartbox"), sc = $("#scroller");
-  const W = box.clientWidth, H = 320;
+  const W = box.clientWidth || 360;
+  const H = Math.round(Math.min(460, Math.max(320, window.innerHeight*0.5)));
   const pph = S.zoom==="2d" ? W/36 : S.zoom==="7d" ? W/(24*7) : Math.max(1.1, W/(24*30));
-  const top = 58, bot = 40, ch = H-top-bot;
-  let mn = Infinity, mx = -Infinity;
-  for(const v of P){ if(v<mn)mn=v; if(v>mx)mx=v; }
-  mn = Math.floor((mn-2)/5)*5; mx = Math.ceil((mx+2)/5)*5;
+  const top = 112, bot = 44, ch = H-top-bot;
+  let mn = Infinity, mx = -Infinity; for(const v of P){ if(v<mn)mn=v; if(v>mx)mx=v; }
+  mn = Math.floor((mn-1)/5)*5; mx = Math.ceil((mx+1)/5)*5;
   const y = v => top + (mx-v)/(mx-mn)*ch;
   const X = i => i*pph;
   const TW = Math.ceil(n*pph);
-  let s = `<svg width="${TW}" height="${H}" xmlns="http://www.w3.org/2000/svg" style="display:block">`;
-  s += `<defs><linearGradient id="fut" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".06"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient></defs>`;
-  // Zukunft heller
+  let s = `<svg width="${TW}" height="${H}" style="display:block">`;
+  s += `<defs><linearGradient id="fut" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".07"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient></defs>`;
+  s += `<rect x="0" y="0" width="${X(D.nowI)}" height="${H}" fill="rgba(0,0,0,.12)"/>`;
   s += `<rect x="${X(D.nowI)}" y="0" width="${TW-X(D.nowI)}" height="${H}" fill="url(#fut)"/>`;
-  // Bänder zusammengefasst
+  if(S.hl){ const a = h.time.indexOf(S.hl+"T00:00"); if(a>=0) s += `<rect x="${X(a)}" y="${top-30}" width="${24*pph}" height="${ch+30}" fill="rgba(255,255,255,.1)" stroke="#fff" stroke-width="1.5" rx="8"/>`; }
   const bl = D.blocks; let k = 0;
   while(k<bl.length){
     const lv = bl[k].lv; let e = k;
     while(e+1<bl.length && bl[e+1].lv===lv && bl[e+1].i===bl[e].i+3) e++;
     if(lv!==0){
-      const x0 = X(bl[k].i), x1 = X(bl[e].i+3);
-      const past = bl[e].i+3<=D.nowI;
-      const col = lv===-1 ? UPCOL : LV.col[lv];
-      s += `<rect x="${x0}" y="${top-8}" width="${x1-x0}" height="${ch+8}" fill="${col}" opacity="${past?0.22:0.42}"/>`;
-      s += `<rect x="${x0}" y="${top-12}" width="${x1-x0}" height="4" fill="${col}" opacity="${past?0.6:1}"/>`;
-      if(x1-x0>=46 && lv!==-1){ s += `<text x="${(x0+x1)/2}" y="${top+10}" fill="#fff" font-size="12" font-weight="700" text-anchor="middle" opacity="${past?0.6:0.95}">${LV.name[lv]}</text>`; }
+      const x0 = X(bl[k].i), x1 = X(bl[e].i+3), past = bl[e].i+3<=D.nowI, col = lv===-1 ? UPCOL : LV.col[lv];
+      s += `<rect x="${x0}" y="${top-26}" width="${x1-x0}" height="${ch+26}" fill="${col}" opacity="${past?0.2:0.4}"/>`;
+      if(x1-x0>=70 && lv!==-1) s += `<g opacity="${past?0.55:1}"><circle cx="${x0+18}" cy="${top-6}" r="11" fill="#fff"/><path d="M${x0+12} ${top-10}l4 5 3-2 5 6" stroke="${col}" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/><text x="${x0+35}" y="${top-1}" fill="#fff" font-size="15" font-weight="700">${LV.name[lv]}</text></g>`;
+      else if(x1-x0>=28 && lv!==-1) s += `<circle cx="${(x0+x1)/2}" cy="${top-6}" r="5" fill="#fff" opacity="${past?0.55:1}"/>`;
     }
     k = e+1;
   }
-  // Raster
-  for(let v=mn; v<=mx; v+=5){ s += `<line x1="0" x2="${TW}" y1="${y(v)}" y2="${y(v)}" stroke="rgba(255,255,255,.18)" stroke-dasharray="4 4"/>`; }
-  // Tage
-  const dayStep = S.zoom==="all" ? 7 : 1;
+  for(let v=mn; v<=mx; v+=5) s += `<line x1="0" x2="${TW}" y1="${y(v)}" y2="${y(v)}" stroke="rgba(255,255,255,.2)" stroke-dasharray="5 5"/>`;
   for(let i=0;i<n;i++){
-    const t = h.time[i]; const hr = +t.slice(11,13);
+    const t = h.time[i], hr = +t.slice(11,13);
     if(hr===0){
-      const dt = new Date(t.slice(0,10)+"T12:00:00");
-      s += `<line x1="${X(i)}" x2="${X(i)}" y1="${top-12}" y2="${H-bot+4}" stroke="rgba(255,255,255,${S.zoom==="all"?0.12:0.35})"/>`;
-      if(S.zoom!=="all" || dt.getDay()===1){
-        s += `<text x="${X(i)+5}" y="${H-12}" fill="#fff" font-size="13" font-weight="700">${WD[dt.getDay()]} ${dt.getDate()}.${S.zoom==="all"?(dt.getMonth()+1)+".":""}</text>`;
-      }
+      const dt = dOf(t.slice(0,10));
+      s += `<line x1="${X(i)}" x2="${X(i)}" y1="${top-26}" y2="${H-bot+6}" stroke="rgba(255,255,255,${S.zoom==="all"?0.12:0.45})"/>`;
+      if(S.zoom!=="all" || dt.getDay()===1) s += `<text x="${X(i)+6}" y="${H-14}" fill="#fff" font-size="15" font-weight="700">${dt.getDate()} (${WD[dt.getDay()]})</text>`;
     } else if(S.zoom==="2d" && hr%6===0){
-      s += `<line x1="${X(i)}" x2="${X(i)}" y1="${top-8}" y2="${H-bot}" stroke="rgba(255,255,255,.15)" stroke-dasharray="3 5"/>`;
-      s += `<text x="${X(i)+4}" y="${H-12}" fill="rgba(255,255,255,.75)" font-size="12">${hr}</text>`;
+      s += `<line x1="${X(i)}" x2="${X(i)}" y1="${top-26}" y2="${H-bot}" stroke="rgba(255,255,255,.3)" stroke-dasharray="4 5"/>`;
+      s += `<text x="${X(i)+6}" y="${H-14}" fill="rgba(255,255,255,.85)" font-size="15">${hr}</text>`;
     }
   }
-  // Wetter Symbole
   if(S.zoom!=="all"){
-    const st = S.zoom==="2d" ? 3 : 12;
     for(let i=0;i<n;i++){
       const hr = +h.time[i].slice(11,13);
-      if(hr%st!==0 || (S.zoom==="7d" && hr!==12)) continue;
-      s += `<text x="${X(i)+(S.zoom==="2d"?pph*1.5:0)}" y="${H-bot-8}" font-size="${S.zoom==="2d"?17:16}" text-anchor="middle" opacity="${i<D.nowI?0.55:1}">${wIcon(h.weather_code[i], h.is_day[i])}</text>`;
+      if(S.zoom==="2d" ? hr%3!==1 : hr!==12) continue;
+      const sz = 26;
+      s += `<use href="#${wKey(h.weather_code[i], h.is_day[i])}" x="${X(i)-sz/2+(S.zoom==="2d"?pph*0.5:0)}" y="${H-bot-sz-4}" width="${sz}" height="${sz}" opacity="${i<D.nowI?0.5:1}"/>`;
     }
   }
-  // Kopfschmerz Markierungen
   for(const day in S.diary){
     const v = S.diary[day]; if(!v) continue;
     const i0 = h.time.indexOf(day+"T00:00"); if(i0<0) continue;
-    const xm = X(i0+12);
-    const col = v===3?"#ff4d6d":v===2?"#ff9f5a":"#ffd84d";
-    s += `<line x1="${xm}" x2="${xm}" y1="${top-6}" y2="${H-bot}" stroke="${col}" stroke-width="1.5" stroke-dasharray="2 4" opacity=".7"/>`;
-    s += `<text x="${xm}" y="${top+(S.zoom==="all"?2:28)}" font-size="${S.zoom==="all"?12:18}" text-anchor="middle">🤕</text>`;
+    const xm = X(i0+12), col = ["","#f5d94a","#f2a65a","#ee5d70"][v];
+    s += `<line x1="${xm}" x2="${xm}" y1="${top+18}" y2="${H-bot-34}" stroke="${col}" stroke-width="1.5" stroke-dasharray="2 4" opacity=".8"/>`;
+    s += `<circle cx="${xm}" cy="${top+14}" r="${S.zoom==="all"?4:8}" fill="${col}" stroke="#fff" stroke-width="2"/>`;
   }
-  // Linie Vergangenheit / Zukunft
   let pa = "", fu = "";
   for(let i=0;i<=D.nowI;i++) pa += (i?"L":"M")+X(i).toFixed(1)+" "+y(P[i]).toFixed(1);
   for(let i=D.nowI;i<n;i++) fu += (i>D.nowI?"L":"M")+X(i).toFixed(1)+" "+y(P[i]).toFixed(1);
-  s += `<path d="${pa}" fill="none" stroke="rgba(255,255,255,.85)" stroke-width="3" stroke-dasharray="${S.zoom==="all"?"0":"5 6"}" stroke-linecap="round"/>`;
-  s += `<path d="${fu}" fill="none" stroke="#fff" stroke-width="3.2" stroke-linejoin="round"/>`;
-  // Jetzt
-  s += `<line x1="${X(D.nowI)}" x2="${X(D.nowI)}" y1="${top-12}" y2="${H-bot+4}" stroke="var(--now)" stroke-width="2.5"/>`;
-  // Cursor
-  s += `<g id="cur" style="display:none"><line id="curL" y1="${top-12}" y2="${H-bot}" stroke="#fff" stroke-width="3"/><circle id="curC" r="8" fill="#fff"/></g>`;
-  s += `</svg>`;
+  s += `<path d="${pa}" fill="none" stroke="rgba(255,255,255,.85)" stroke-width="4" stroke-dasharray="${S.zoom==="all"?"0":"0.1 9"}" stroke-linecap="round"/>`;
+  s += `<path d="${fu}" fill="none" stroke="#fff" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/>`;
+  s += `<line x1="${X(D.nowI)}" x2="${X(D.nowI)}" y1="${top-26}" y2="${H-bot+6}" stroke="var(--now)" stroke-width="3"/>`;
+  s += `<g id="cur"><line id="curL" y1="${top-26}" y2="${H-bot+6}" stroke="#fff" stroke-width="5" stroke-linecap="round"/><circle id="curC" r="11" fill="#fff"/></g></svg>`;
   sc.innerHTML = s;
-  // y Achse
-  let ya = "";
-  for(let v=mn; v<=mx; v+=5){ ya += `<text x="6" y="${y(v)-4}" fill="rgba(255,255,255,.85)" font-size="12">${v}</text>`; }
-  $("#yaxis").innerHTML = ya; $("#yaxis").setAttribute("height", H);
-  CH = {pph, y, X, top, bot, H};
+  let ya = ""; for(let v=mn; v<=mx; v+=5) if(y(v)+18 < H-bot-30 && y(v) > top-20) ya += `<text x="8" y="${y(v)+18}" fill="rgba(255,255,255,.9)" font-size="14">${v}</text>`;
+  const yax = $("#yaxis"); yax.innerHTML = ya; yax.setAttribute("height", H);
+  CH = {pph, y, X, W};
   const target = focusIndex!=null ? focusIndex : D.nowI;
-  sc.scrollLeft = Math.max(0, X(target) - W*0.35);
+  sc.scrollLeft = Math.max(0, X(target) - W*0.5);
   setCursor(target);
-  const pick = ev => {
-    const r = sc.getBoundingClientRect();
-    const cx = (ev.touches?ev.touches[0].clientX:ev.clientX) - r.left + sc.scrollLeft;
-    setCursor(Math.max(0, Math.min(n-1, Math.round(cx/pph))));
-  };
+  const pick = ev => { const r = sc.getBoundingClientRect(); setCursor(Math.max(0, Math.min(n-1, Math.round((ev.clientX - r.left + sc.scrollLeft)/pph)))); };
   sc.onclick = pick;
   sc.onpointermove = ev => { if(ev.pointerType==="mouse") pick(ev); };
-  let scT; sc.onscroll = ()=>{ clearTimeout(scT); scT=setTimeout(()=>{ setCursor(Math.max(0,Math.min(n-1,Math.round((sc.scrollLeft+W*0.35)/pph)))); },60); };
-  $("#nowBtn").onclick = ()=>{ sc.scrollTo({left:Math.max(0,X(D.nowI)-W*0.35),behavior:"smooth"}); };
+  let scT; sc.onscroll = ()=>{ clearTimeout(scT); scT=setTimeout(()=> setCursor(Math.max(0,Math.min(n-1,Math.round((sc.scrollLeft+W*0.5)/pph)))), 50); };
+  $("#nowBtn").onclick = ()=>{ S.hl=null; sc.scrollTo({left:Math.max(0,X(D.nowI)-W*0.5),behavior:"smooth"}); };
 }
 function setCursor(i){
   const D = S.data, h = D.h; if(!CH) return;
-  const g = document.getElementById("cur"); if(!g) return;
-  g.style.display = "";
   const x = CH.X(i), yy = CH.y(D.P[i]);
-  const L = document.getElementById("curL"), C = document.getElementById("curC");
+  const L = document.getElementById("curL"), C = document.getElementById("curC"); if(!L) return;
   L.setAttribute("x1",x); L.setAttribute("x2",x); C.setAttribute("cx",x); C.setAttribute("cy",yy);
-  const t = h.time[i], dt = new Date(t.slice(0,10)+"T12:00:00");
-  const b = D.blocks.find(b=>b.i<=i && i<b.i+3);
-  const lvTxt = b ? (b.lv===-1 ? "Anstieg" : LV.name[b.lv]) : "";
-  const d3 = b ? b.d : 0;
-  $("#readout").innerHTML = `<div>${WD[dt.getDay()]} ${dt.getDate()}.${dt.getMonth()+1}.<br><b>${t.slice(11,16)}</b></div>`+
-    `<div><b>${fmt1(D.P[i])}</b> hPa<br>${d3<0?"↓":"↑"} ${fmt1(Math.abs(d3))} in 3 h · ${lvTxt}</div>`+
-    `<div>${wIcon(h.weather_code[i],h.is_day[i])} <b>${fmt0(h.temperature_2m[i])}°</b><br>${h.precipitation[i]>0?fmt1(h.precipitation[i])+" mm":"trocken"}</div>`;
+  const t = h.time[i], dt = dOf(t.slice(0,10)), b = blockAt(i), d3 = b ? b.d : 0;
+  const arrow = d3<=-0.3 ? "↘" : d3>=0.3 ? "↗" : "→";
+  $("#readout").innerHTML = `<div class="p">${dt.getDate()}.${dt.getMonth()+1}. (${WD[dt.getDay()]})<br><b>${t.slice(11,16)}</b></div>`+
+    `<div class="p" style="flex:1">${b&&b.lv!==0?(b.lv===-1?"Anstieg":LV.name[b.lv])+" · ":""}${fmt1(Math.abs(d3))} hPa in 3 h<br><b>${fmt1(D.P[i])}</b> hPa ${arrow}</div>`+
+    `<div class="p" style="display:flex;align-items:center;gap:6px">${wIcon(h.weather_code[i],h.is_day[i])}<div><b>${fmt0(h.temperature_2m[i])}°</b><br>${h.precipitation[i]>0?fmt1(h.precipitation[i])+" mm":"trocken"}</div></div>`;
 }
 
-/* ---------- Vorschau ---------- */
+/* ---------- Vorschau Liste ---------- */
 function chipFor(o){
   if(!o) return `<span class="chip c0">?</span>`;
   if(o.max>0) return `<span class="chip c${o.max}">${LV.name[o.max]}</span>`;
   if(o.up) return `<span class="chip cu">Anstieg</span>`;
   return `<span class="chip c0">Ruhig</span>`;
 }
+function fcDays(){ const d = S.data.j.daily; return d.time.map((t,k)=>k).filter(k=>d.time[k]>=S.data.today); }
 function renderForecast(){
-  const D = S.data, d = D.j.daily, today = D.h.time[D.nowI].slice(0,10);
-  let html = "";
-  for(let k=0;k<d.time.length;k++){
-    const day = d.time[k]; if(day<today) continue;
-    const dt = new Date(day+"T12:00:00");
-    const o = D.days[day];
-    const lbl = day===today ? "Heute" : WD[dt.getDay()];
-    const rain = d.precipitation_sum[k], pp = d.precipitation_probability_max ? d.precipitation_probability_max[k] : null;
-    html += `<div class="day" data-day="${day}">
-      <div class="d">${lbl}<small>${dt.getDate()}.${dt.getMonth()+1}.</small></div>
-      <div class="wi">${wIcon(d.weather_code[k],1)}</div>
-      <div class="t"><b>${fmt0(d.temperature_2m_max[k])}°</b> <small>/ ${fmt0(d.temperature_2m_min[k])}°</small><br><small>${rain>0.1?"🌧 "+fmt1(rain)+" mm":"trocken"}${pp!=null&&rain>0.1?" · "+pp+" %":""}</small>${o&&o.d24!=null?"<br><small>Druck "+(o.d24<0?"↓ ":"↑ ")+fmt1(Math.abs(o.d24))+" hPa in 24 h</small>":""}</div>
-      ${chipFor(o)}</div>`;
-  }
-  $("#fcList").innerHTML = html;
-  document.querySelectorAll(".day").forEach(el=> el.onclick = ()=>{
-    const i = D.h.time.indexOf(el.dataset.day+"T12:00");
-    if(S.zoom==="all"){ S.zoom="2d"; store.set("zoom","2d"); }
-    show("home"); renderHome(); drawChart(i);
-  });
+  const D = S.data, d = D.j.daily, ks = fcDays();
+  let tmin = Infinity, tmax = -Infinity; for(const k of ks){ tmin=Math.min(tmin,d.temperature_2m_min[k]); tmax=Math.max(tmax,d.temperature_2m_max[k]); }
+  $("#fcList").innerHTML = ks.map(k=>{
+    const day = d.time[k], dt = dOf(day), o = D.days[day], rain = d.precipitation_sum[k];
+    const a = (d.temperature_2m_min[k]-tmin)/(tmax-tmin||1)*100, b = (d.temperature_2m_max[k]-tmin)/(tmax-tmin||1)*100;
+    return `<button class="day" data-day="${day}">
+      <div class="d">${day===D.today?"Heute":WD[dt.getDay()]}<small>${dLabel(day)}</small></div>
+      ${wIcon(d.weather_code[k],1)}
+      <div class="t"><b>${fmt0(d.temperature_2m_max[k])}°</b> <small>${fmt0(d.temperature_2m_min[k])}°</small>${rain>0.1?` <small>· ${fmt1(rain)} mm</small>`:""}
+        <div class="tbar"><i style="left:${a}%;width:${Math.max(4,b-a)}%"></i></div></div>
+      ${chipFor(o)}${ic("i-chev")}</button>`;
+  }).join("");
+  document.querySelectorAll(".day").forEach(el=> el.onclick = ()=> openDay(el.dataset.day));
 }
 
+/* ---------- Tagesansicht ---------- */
+function openDay(day){
+  const D = S.data, d = D.j.daily, k = d.time.indexOf(day); if(k<0) return;
+  const ks = fcDays(), pos = ks.indexOf(k);
+  const i0 = D.h.time.indexOf(day+"T00:00"); if(i0<0) return;
+  const o = D.days[day]||{max:0,drop:0}, dt = dOf(day), h = D.h;
+  const rain = d.precipitation_sum[k], pp = d.precipitation_probability_max ? d.precipitation_probability_max[k] : null;
+  const dropT = o.dropI!=null ? h.time[o.dropI].slice(11,16)+" bis "+h.time[Math.min(D.n-1,o.dropI+3)].slice(11,16)+" Uhr" : "";
+  const advice = o.max>=2 ? `<div class="warn w${o.max}" style="margin-top:12px"><div class="ico">${ic("i-alert")}</div><div><b>${LV.name[o.max]}er Druckabfall</b>Am stärksten ${dropT}: ↓ ${fmt1(Math.abs(o.drop))} hPa in 3 Stunden${o.d24!=null?`, über den ganzen Tag ${o.d24<0?"↓":"↑"} ${fmt1(Math.abs(o.d24))} hPa`:""}.</div></div>`
+    : `<div class="warn w0" style="margin-top:12px"><div class="ico">${ic("i-check")}</div><div><b>${o.max===1?"Nur leichte Druckschwankung":o.up?"Luftdruck steigt":"Ruhiger Luftdruck"}</b>${o.d24!=null?`Über den Tag ${o.d24<0?"↓":"↑"} ${fmt1(Math.abs(o.d24))} hPa.`:""}</div></div>`;
+  let hrs = "";
+  for(let i=i0;i<i0+24 && i<D.n;i+=(S.data.nowI>i0?1:1)){
+    if(i<D.nowI && day===D.today) continue;
+    const b = blockAt(i);
+    hrs += `<div class="hr">${h.time[i].slice(11,13)} h${wIcon(h.weather_code[i],h.is_day[i])}<b>${fmt0(h.temperature_2m[i])}°</b><span class="pp">${fmt0(D.P[i])}<br>hPa</span><span class="lv" style="background:${b&&b.lv>0?LV.col[b.lv]:b&&b.lv===-1?UPCOL:"rgba(255,255,255,.2)"}"></span></div>`;
+  }
+  const sun = (d.sunrise&&d.sunset) ? `${d.sunrise[k].slice(11,16)} bis ${d.sunset[k].slice(11,16)}` : "";
+  $("#sheet").innerHTML = `<div class="grab"></div>
+    <div class="dhead">${wIcon(d.weather_code[k],1)}<div class="ttl"><b>${day===D.today?"Heute":WDL[dt.getDay()]}, ${dLabel(day)}</b><small>${wText(d.weather_code[k])}</small></div>${chipFor(o)}</div>
+    ${advice}
+    <div class="grid2">
+      <div class="card"><div class="k">${ic("i-thermo")}Temperatur</div><div class="v">${fmt0(d.temperature_2m_max[k])}°<small style="color:var(--mut)">/ ${fmt0(d.temperature_2m_min[k])}°</small></div></div>
+      <div class="card"><div class="k">${ic("i-drop")}Regen</div><div class="v">${fmt1(rain)}<small>mm</small></div><div class="s">${pp!=null?pp+" % Regenrisiko":""}</div></div>
+      <div class="card"><div class="k">${ic("i-gauge")}Luftdruck</div><div class="v" style="font-size:25px">${fmt0(Math.min(...D.P.slice(i0,i0+24)))}<small>bis</small>${fmt0(Math.max(...D.P.slice(i0,i0+24)))}</div><div class="s">hPa auf Meereshöhe</div></div>
+      <div class="card"><div class="k">${ic("i-clock")}${sun?"Sonne":"Wind"}</div><div class="v" style="font-size:20px">${sun||((d.wind_speed_10m_max?fmt0(d.wind_speed_10m_max[k]):"?")+" km/h")}</div><div class="s">${sun&&d.wind_speed_10m_max?"Wind bis "+fmt0(d.wind_speed_10m_max[k])+" km/h":""}</div></div>
+    </div>
+    <h3>Luftdruck über den Tag</h3>
+    <div class="mini" style="padding:8px 6px 2px">${miniChart(D, i0, 24, {w:340,h:160})}</div>
+    <h3>Stündlich</h3>
+    <div class="hours">${hrs}</div>
+    <div class="navrow">
+      <button class="btn sm" id="dPrev" ${pos<=0?"disabled style=opacity:.4":""}>${ic("i-back")}</button>
+      <button class="btn" id="dChart" style="flex:1">${ic("i-chart")}Im Diagramm zeigen</button>
+      <button class="btn sm" id="dNext" ${pos>=ks.length-1?"disabled style=opacity:.4":""}>${ic("i-chev")}</button>
+    </div>
+    <button class="btn" id="dClose" style="margin-top:8px;background:transparent">Schließen</button>`;
+  $("#sheet").scrollTop = 0;
+  $("#sheet").classList.add("on"); $("#sheetbg").classList.add("on");
+  $("#dClose").onclick = closeDay;
+  $("#dPrev").onclick = ()=>{ if(pos>0) openDay(d.time[ks[pos-1]]); };
+  $("#dNext").onclick = ()=>{ if(pos<ks.length-1) openDay(d.time[ks[pos+1]]); };
+  $("#dChart").onclick = ()=>{ closeDay(); S.hl = day; if(S.zoom==="all"){ S.zoom="2d"; store.set("zoom","2d"); markZoom(); } window.scrollTo({top:0,behavior:"smooth"}); drawChart(i0+12); };
+}
+function closeDay(){ $("#sheet").classList.remove("on"); $("#sheetbg").classList.remove("on"); }
+$("#sheetbg").onclick = closeDay;
+(function(){ let y0=null; const sh=$("#sheet");
+  sh.addEventListener("touchstart",e=>{ y0 = sh.scrollTop<=0 ? e.touches[0].clientY : null; },{passive:true});
+  sh.addEventListener("touchmove",e=>{ if(y0!=null && e.touches[0].clientY-y0>90){ y0=null; closeDay(); } },{passive:true});
+})();
+
 /* ---------- Tagebuch ---------- */
-const FACES = [["🙂","Keine"],["😐","Leicht"],["😣","Mittel"],["😫","Stark"]];
+const FACES = ["Keine","Leicht","Mittel","Stark"];
 function setDiary(day, v){
   if(S.diary[day]===v){ delete S.diary[day]; api("diary_del",{day}); }
   else { S.diary[day]=v; api("diary_set",{day, intensity:v}); }
   store.set("diary", S.diary);
-  renderLog(); if(S.data) { renderHome(); }
+  renderLog(); renderHome(); if($("#v-fc").classList.contains("on")) drawChart();
 }
 function renderLog(){
   if(!S.data) return;
-  const D = S.data, today = D.h.time[D.nowI].slice(0,10);
-  $("#todayFeel").innerHTML = FACES.map((f,i)=>`<button data-v="${i}" class="${S.diary[today]===i?"on":""}"><span>${f[0]}</span>${f[1]}</button>`).join("");
+  const D = S.data, today = D.today;
+  $("#todayFeel").innerHTML = FACES.map((f,i)=>`<button data-v="${i}" class="${S.diary[today]===i?"on":""}"><i class="dot${i}"></i>${f}</button>`).join("");
   $("#todayFeel").querySelectorAll("button").forEach(b=> b.onclick = ()=> setDiary(today, +b.dataset.v));
-  let html = "";
-  const base = new Date(today+"T12:00:00");
+  let html = ""; const base = dOf(today);
   for(let k=1;k<=60;k++){
-    const dt = new Date(base.getTime()-k*864e5);
-    const day = dt.toISOString().slice(0,10);
-    const o = D.days[day];
-    html += `<div class="lr"><div class="dd"><b>${WD[dt.getDay()]} ${dt.getDate()}.${dt.getMonth()+1}.</b></div>${chipFor(o)}
-      <div class="pick" data-day="${day}">${FACES.map((f,i)=>`<button data-v="${i}" class="${S.diary[day]===i?"on":""}">${f[0]}</button>`).join("")}</div></div>`;
+    const dt = new Date(base.getTime()-k*864e5), day = dt.toISOString().slice(0,10);
+    html += `<div class="lr"><div class="dd">${WD[dt.getDay()]} ${dt.getDate()}.${dt.getMonth()+1}.</div>${chipFor(D.days[day])}
+      <div class="pick" data-day="${day}">${FACES.map((f,i)=>`<button data-v="${i}" class="dot${i} ${S.diary[day]===i?"on":""}" aria-label="${f}"></button>`).join("")}</div></div>`;
   }
   $("#logList").innerHTML = html;
   document.querySelectorAll(".pick").forEach(p=> p.querySelectorAll("button").forEach(b=> b.onclick = ()=> setDiary(p.dataset.day, +b.dataset.v)));
   renderStats();
 }
 function renderStats(){
-  const D = S.data, today = D.h.time[D.nowI].slice(0,10);
-  const isDrop = day => { // Druckabfall am Tag oder am Abend davor
+  const D = S.data, today = D.today;
+  const isDrop = day => {
     const o = D.days[day]; if(o && o.max>=2) return true;
     const prev = new Date(Date.parse(day+"T12:00:00")-864e5).toISOString().slice(0,10);
     const i18 = D.h.time.indexOf(prev+"T18:00");
@@ -577,26 +715,23 @@ function renderStats(){
   const entries = Object.keys(S.diary).filter(d=>d<=today && D.days[d]);
   const pain = entries.filter(d=>S.diary[d]>0), free = entries.filter(d=>S.diary[d]===0);
   if(entries.length<5){
-    $("#statBox").innerHTML = `<div>Trage ein paar Tage ein, dann zeigt dir Kopfwetter hier, ob deine Kopfschmerzen mit Druckabfällen zusammenfallen.</div><div class="muted" style="margin-top:8px">Bisher ${entries.length} Einträge. Aussagekräftig wird es ab etwa 3 bis 4 Wochen.</div>`;
+    $("#statBox").innerHTML = `Trage ein paar Tage ein, dann zeigt dir Kopfwetter hier, ob deine Kopfschmerzen mit Druckabfällen zusammenfallen.<div class="muted" style="margin-top:8px">Bisher ${entries.length} Einträge. Aussagekräftig wird es nach etwa 3 bis 4 Wochen.</div>`;
     return;
   }
-  const pd = pain.filter(isDrop).length, fd = free.filter(isDrop).length;
-  const pr = pain.length ? pd/pain.length : 0, fr = free.length ? fd/free.length : 0;
-  let verdict;
-  if(pain.length<3) verdict = "Noch zu wenige Kopfschmerztage für eine Aussage.";
-  else if(pr>=fr+0.25) verdict = "Deutlicher Zusammenhang: Deine Kopfschmerzen treten auffällig oft bei Druckabfall auf.";
-  else if(pr>=fr+0.1) verdict = "Leichter Zusammenhang erkennbar. Weiter eintragen, dann wird es klarer.";
-  else verdict = "Bisher kein klarer Zusammenhang mit dem Luftdruck. Vielleicht spielen andere Auslöser eine größere Rolle.";
-  $("#statBox").innerHTML = `
-    <div class="big">${Math.round(pr*100)} %</div>
+  const pr = pain.length ? pain.filter(isDrop).length/pain.length : 0, fr = free.length ? free.filter(isDrop).length/free.length : 0;
+  const verdict = pain.length<3 ? "Noch zu wenige Kopfschmerztage für eine Aussage."
+    : pr>=fr+0.25 ? "Deutlicher Zusammenhang: Deine Kopfschmerzen treten auffällig oft bei Druckabfall auf."
+    : pr>=fr+0.1 ? "Leichter Zusammenhang erkennbar. Weiter eintragen, dann wird es klarer."
+    : "Bisher kein klarer Zusammenhang mit dem Luftdruck. Vielleicht spielen andere Auslöser eine größere Rolle.";
+  $("#statBox").innerHTML = `<div class="big">${Math.round(pr*100)} %</div>
     <div>deiner ${pain.length} Kopfschmerztage fielen auf einen Tag mit mäßigem oder starkem Druckabfall (oder den Abend davor).</div>
-    <div class="bar"><i style="width:${pr*100}%;background:var(--l3)"></i></div>
+    <div class="meter"><i style="width:${pr*100}%;background:var(--l3)"></i></div>
     <div>Zum Vergleich: an <b>${Math.round(fr*100)} %</b> deiner ${free.length} Tage ohne Kopfschmerzen gab es ebenfalls einen Druckabfall.</div>
-    <div class="bar"><i style="width:${fr*100}%;background:var(--now)"></i></div>
-    <div style="font-weight:700">${verdict}</div>`;
+    <div class="meter"><i style="width:${fr*100}%;background:var(--now)"></i></div>
+    <div style="font-weight:800">${verdict}</div>`;
 }
 
-/* ---------- Backend (Supabase) ---------- */
+/* ---------- Backend ---------- */
 async function api(action, body){
   if(!S.token && action!=="register") return null;
   try{
@@ -607,59 +742,115 @@ async function api(action, body){
   }catch(e){ console.warn(action, e); if(action.startsWith("push")) toast(e.message); return null; }
 }
 async function syncBackend(){
-  if(!S.token){
-    const r = await api("register", {});
-    if(r && r.token){ S.token = r.token; store.set("token", S.token); }
-    else return;
-  }
+  if(!S.token){ const r = await api("register", {}); if(r && r.token){ S.token = r.token; store.set("token", S.token); } else return; }
   const r = await api("sync", {lat:S.loc.lat, lon:S.loc.lon, place:S.loc.name, local: S.diary});
   if(r && r.diary){
     S.diary = r.diary; store.set("diary", S.diary);
-    if(r.level){ S.level = r.level; store.set("level", S.level); $("#levelSel").value = S.level; }
+    if(r.level){ S.level = r.level; store.set("level", S.level); }
     if(r.vapid) store.set("vapid", r.vapid);
-    $("#pushToggle").checked = !!r.pushOn && typeof Notification!=="undefined" && Notification.permission==="granted";
-    if(S.data){ renderLog(); }
+    S.pushOn = !!r.pushOn && typeof Notification!=="undefined" && Notification.permission==="granted";
+    if(S.data){ renderLog(); renderHome(); }
+    renderSettings();
   }
 }
 
 /* ---------- Push ---------- */
 function b64u(s){ const p="=".repeat((4-s.length%4)%4); const b=atob((s+p).replace(/-/g,"+").replace(/_/g,"/")); return Uint8Array.from([...b].map(c=>c.charCodeAt(0))); }
+const standalone = () => window.matchMedia("(display-mode: standalone)").matches || navigator.standalone;
 async function pushOn(){
-  const standalone = window.matchMedia("(display-mode: standalone)").matches || navigator.standalone;
-  if(/iPhone|iPad/.test(navigator.userAgent) && !standalone){
-    sheet(`<h2 style="margin-top:0">Erst zum Homebildschirm hinzufügen</h2><p class="stat">Auf dem iPhone funktionieren Benachrichtigungen nur, wenn Kopfwetter als App auf dem Homebildschirm liegt:</p>
-      <p class="stat">1. Unten in Safari auf <b>Teilen</b> tippen<br>2. <b>Zum Home Bildschirm</b> wählen<br>3. Kopfwetter vom Homebildschirm öffnen und hier die Warnung einschalten</p><button class="btn pri" onclick="closeSheet()">Verstanden</button>`);
-    $("#pushToggle").checked = false; return;
-  }
-  if(!("serviceWorker" in navigator) || !("PushManager" in window)){ toast("Dieses Gerät unterstützt keine Push Nachrichten"); $("#pushToggle").checked=false; return; }
-  if(typeof Notification==="undefined"){ toast("Benachrichtigungen werden nicht unterstützt"); $("#pushToggle").checked=false; return; }
+  if(/iPhone|iPad/.test(navigator.userAgent) && !standalone()){ toast("Zuerst Kopfwetter über Teilen zum Home Bildschirm hinzufügen und von dort öffnen", 5000); return false; }
+  if(!("serviceWorker" in navigator) || !("PushManager" in window) || typeof Notification==="undefined"){ toast("Dieses Gerät unterstützt keine Push Nachrichten"); return false; }
   const perm = await Notification.requestPermission();
-  if(perm!=="granted"){ toast("Benachrichtigungen wurden nicht erlaubt"); $("#pushToggle").checked=false; return; }
-  const reg = await navigator.serviceWorker.ready;
-  const vapid = store.get("vapid", null);
-  if(!vapid){ toast("Server nicht erreichbar, bitte später erneut"); $("#pushToggle").checked=false; return; }
+  if(perm!=="granted"){ toast("Benachrichtigungen wurden nicht erlaubt"); return false; }
+  const reg = await navigator.serviceWorker.ready, vapid = store.get("vapid", null);
+  if(!vapid){ toast("Server nicht erreichbar, bitte später erneut"); return false; }
   let sub = await reg.pushManager.getSubscription();
   if(!sub) sub = await reg.pushManager.subscribe({userVisibleOnly:true, applicationServerKey:b64u(vapid)});
   const js = sub.toJSON();
   const r = await api("push_sub", {endpoint:js.endpoint, p256dh:js.keys.p256dh, auth:js.keys.auth});
-  if(r){ toast("Warnungen sind eingeschaltet"); } else { $("#pushToggle").checked=false; }
+  if(r) toast("Warnungen sind eingeschaltet");
+  return !!r;
 }
 async function pushOff(){
-  try{
-    const reg = await navigator.serviceWorker.ready;
-    const sub = await reg.pushManager.getSubscription();
-    if(sub){ await api("push_unsub",{endpoint:sub.endpoint}); await sub.unsubscribe(); }
-    toast("Warnungen ausgeschaltet");
-  }catch(e){}
+  try{ const reg = await navigator.serviceWorker.ready, sub = await reg.pushManager.getSubscription();
+    if(sub){ await api("push_unsub",{endpoint:sub.endpoint}); await sub.unsubscribe(); } toast("Warnungen ausgeschaltet"); }catch(e){}
 }
 
-/* ---------- Dialoge ---------- */
-function sheet(html){ $("#sheet").innerHTML = html; $("#modal").classList.add("on"); }
-function closeSheet(){ $("#modal").classList.remove("on"); }
-$("#modal").onclick = e => { if(e.target.id==="modal") closeSheet(); };
+/* ---------- Einstellungen ---------- */
+function renderSettings(){
+  const tn = THEMES.find(t=>t[0]===S.theme)[1], iv = INTERVALS.find(x=>x[0]===S.interval)[1];
+  const row = (id, col, icon, title, sub, val) => `<button class="srow" data-p="${id}"><span class="sq" style="background:${col}">${ic(icon)}</span><span class="tx">${title}${sub?`<small>${sub}</small>`:""}</span>${val?`<span class="val">${val}</span>`:""}${ic("i-chev")}</button>`;
+  $("#setMain").innerHTML =
+    row("theme","#5b6cf0","i-palette","Farbthema","",tn)+
+    row("warn","#ee5d70","i-bell","Warnungen","Push bei Druckabfall",S.pushOn?"An":"Aus")+
+    row("loc","#2fa8e0","i-pin","Standort und Aktualisierung","",S.gps?"GPS":esc(S.loc?S.loc.name:""))+
+    row("levels","#f2a65a","i-layers","Stufen erklärt","")+
+    row("device","#5fb36a","i-phone","Gerät und Tagebuch","")+
+    row("about","#8a8fa8","i-info","Über Kopfwetter","");
+  document.querySelectorAll("#setMain .srow").forEach(b=> b.onclick = ()=> openPage(b.dataset.p));
+}
+function pageShell(title, inner){
+  $("#pageBody").innerHTML = `<button class="round" id="pBack" aria-label="Zurück">${ic("i-back")}</button><h1>${title}</h1>${inner}`;
+  $("#pBack").onclick = closePage;
+  $("#page").scrollTop = 0; $("#page").classList.add("on");
+}
+function closePage(){ $("#page").classList.remove("on"); renderSettings(); }
+function openPage(p){
+  if(p==="theme"){
+    pageShell("Farbthema", THEMES.map(t=>{
+      const sw = t[0]==="dynamic" ? ["dawn","sunny","sunset","midnight"].map(x=>`<span class="sw8" style="background:linear-gradient(180deg,${SW[x][0]},${SW[x][1]})"></span>`).join("")
+        : `<span class="sw8" style="background:linear-gradient(180deg,${SW[t[0]][0]},${SW[t[0]][1]})"></span>`;
+      return `<button class="opt" data-t="${t[0]}"><span class="tx"><b>${t[1]} ${sw}</b><small>${t[2]}</small></span>${S.theme===t[0]?`<span class="chk">${ic("i-check")}</span>`:""}</button>`;
+    }).join(""));
+    document.querySelectorAll(".opt[data-t]").forEach(b=> b.onclick = ()=>{ S.theme=b.dataset.t; store.set("theme",S.theme); applyTheme(); openPage("theme"); });
+  }
+  if(p==="warn"){
+    pageShell("Warnungen", `
+      <div class="opt" style="cursor:default"><span class="tx"><b>Push Warnung</b><small>Morgens gegen 6:30 und abends gegen 17:30 Uhr prüft der Server die Vorhersage für die nächsten 30 Stunden und meldet sich nur, wenn ein Druckabfall kommt.</small></span><label class="sw"><input type="checkbox" id="pushToggle" ${S.pushOn?"checked":""}><span></span></label></div>
+      <div class="opt" style="cursor:default"><span class="tx"><b>Warnen ab</b><small>Stufe des Druckabfalls</small></span><select id="levelSel"><option value="2">Mäßig</option><option value="3">Stark</option></select></div>
+      <div style="margin-top:22px"><button class="btn" id="pushTest">${ic("i-bell")}Testnachricht senden</button></div>
+      <p class="help" style="margin-top:18px">Auf dem iPhone funktionieren Benachrichtigungen nur, wenn Kopfwetter über <b>Teilen</b> und <b>Zum Home Bildschirm</b> installiert ist und von dort geöffnet wird.</p>`);
+    $("#levelSel").value = S.level;
+    $("#levelSel").onchange = e => { S.level = +e.target.value; store.set("level", S.level); api("settings", {level:S.level}); };
+    $("#pushToggle").onchange = async e => { if(e.target.checked){ const ok = await pushOn(); e.target.checked = ok; S.pushOn = ok; } else { await pushOff(); S.pushOn = false; } };
+    $("#pushTest").onclick = async ()=>{ const r = await api("push_test", {}); if(r) toast(r.sent ? "Testnachricht gesendet" : "Keine Push Anmeldung gefunden. Bitte zuerst einschalten.", 4000); };
+  }
+  if(p==="loc"){
+    pageShell("Standort und Aktualisierung", `
+      <div class="opt" style="cursor:default"><span class="tx"><b>GPS verwenden</b><small>${S.pos?"Standort erlaubt":"Aktueller Standort bei jedem Öffnen"}${S.loc?" · "+esc(S.loc.name):""}</small></span><label class="sw"><input type="checkbox" id="gpsToggle" ${S.gps?"checked":""}><span></span></label></div>
+      <button class="opt" id="searchOpen"><span class="tx"><b>Ort suchen</b><small>Festen Ort statt GPS verwenden</small></span>${ic("i-search")}</button>
+      <h3 style="margin-top:28px">Aktualisierung</h3>
+      ${INTERVALS.map(x=>`<button class="opt" data-iv="${x[0]}"><span class="tx"><b style="font-size:18px">${x[1]}</b></span>${S.interval===x[0]?`<span class="chk">${ic("i-check")}</span>`:""}</button>`).join("")}
+      <p class="help" style="margin-top:18px">Kopfwetter lädt die Daten neu, solange die App geöffnet ist, und jedes Mal beim Öffnen. Die Werte stammen aus Wettermodellen und Messstationen (Open Meteo). Der aktuelle Wert wird dort etwa alle 15 Minuten erneuert, Verlauf und Vorhersage stündlich. Ein kürzeres Intervall bringt deshalb kaum neue Werte.</p>
+      <p class="help">Den eingebauten Drucksensor des iPhones kann eine Web App nicht auslesen. Eine Messung alle 15 Sekunden mit Aufzeichnung im Hintergrund und Anzeige auf dem Sperrbildschirm geht nur mit einer nativen App aus dem App Store.</p>`);
+    $("#gpsToggle").onchange = e => { S.gps = e.target.checked; store.set("gps", S.gps); if(S.gps) S.loc=null; boot(true); };
+    $("#searchOpen").onclick = openSearch;
+    document.querySelectorAll(".opt[data-iv]").forEach(b=> b.onclick = ()=>{ S.interval=+b.dataset.iv; store.set("interval",S.interval); startTimer(); openPage("loc"); });
+  }
+  if(p==="levels"){
+    pageShell("Stufen erklärt", `<p class="help">Bewertet wird, wie stark sich der Luftdruck innerhalb von 3 Stunden ändert:</p>
+      ${[[1,"Leicht","fällt um 0,6 bis 1 hPa"],[2,"Mäßig","fällt um 1 bis 2 hPa"],[3,"Stark","fällt um mehr als 2 hPa"],[-1,"Anstieg","steigt um mehr als 1 hPa"]].map(x=>`<div class="opt" style="cursor:default"><span class="sw8" style="background:${x[0]===-1?UPCOL:LV.col[x[0]]}"></span><span class="tx"><b style="font-size:18px">${x[1]}</b><small>${x[2]}</small></span></div>`).join("")}
+      <p class="help" style="margin-top:18px">Für die Farbe eines ganzen Tages zählt zusätzlich der Abfall über 24 Stunden: ab 5 hPa Mäßig, ab 8 hPa Stark. Viele Menschen spüren vor allem schnelle Abfälle vor einem Wetterumschwung oder bei Föhn.</p>`);
+  }
+  if(p==="device"){
+    pageShell("Gerät und Tagebuch", `<p class="help">Dein Tagebuch wird geschützt auf dem Server gespeichert. Mit dem Gerätecode kannst du es auf einem zweiten Gerät öffnen.</p>
+      <button class="opt" id="codeShow"><span class="tx"><b>Gerätecode anzeigen</b><small>Halte ihn geheim</small></span>${ic("i-chev")}</button>
+      <button class="opt" id="codeEnter"><span class="tx"><b>Code eingeben</b><small>Tagebuch von einem anderen Gerät übernehmen</small></span>${ic("i-chev")}</button>
+      <div id="codeBox" style="margin-top:16px"></div>`);
+    $("#codeShow").onclick = ()=>{ $("#codeBox").innerHTML = `<input type="text" readonly value="${esc(S.token||"noch nicht verbunden")}" style="width:100%"><div style="margin-top:10px"><button class="btn" id="cp">Kopieren</button></div>`;
+      $("#cp").onclick = ()=>{ try{ navigator.clipboard.writeText(S.token||""); toast("Kopiert"); }catch(e){} }; };
+    $("#codeEnter").onclick = ()=>{ $("#codeBox").innerHTML = `<input type="text" id="codeIn" style="width:100%" placeholder="Gerätecode"><p class="muted">Das Tagebuch dieses Geräts wird durch das andere ersetzt.</p><button class="btn" id="codeOk">Übernehmen</button>`;
+      $("#codeOk").onclick = async ()=>{ const c = $("#codeIn").value.trim(); if(c.length<20) return toast("Code ungültig"); S.token=c; store.set("token",c); S.diary={}; store.set("diary",{}); await syncBackend(); toast("Tagebuch übernommen"); closePage(); }; };
+  }
+  if(p==="about"){
+    pageShell("Über Kopfwetter", `<p class="help">Kopfwetter zeigt dir Luftdruck, Wetter und Druckwechsel für deinen Standort und hilft dir mit dem Tagebuch herauszufinden, ob deine Kopfschmerzen damit zusammenhängen.</p>
+      <p class="help">Wetterdaten: Open Meteo (Modelle u. a. von DWD und ECMWF). Ortsnamen: BigDataCloud. Verlauf 92 Tage, Vorhersage 16 Tage. Ab etwa Tag 7 ist die Vorhersage nur ein grober Trend.</p>
+      <p class="help">Kopfwetter ersetzt keine ärztliche Beratung. Bei sehr häufigen, plötzlich sehr starken oder neuartigen Kopfschmerzen bitte ärztlich abklären lassen.</p>`);
+  }
+}
 function openSearch(){
-  sheet(`<h2 style="margin-top:0">Ort suchen</h2><input type="text" id="q" placeholder="z. B. Garmisch" style="width:100%" autocomplete="off"><div id="res" style="margin-top:8px"></div>
-    <button class="btn" style="margin-top:12px" id="useGps">📍 Aktuellen GPS Standort verwenden</button>`);
+  pageShell("Ort suchen", `<input type="text" id="q" placeholder="z. B. Garmisch" style="width:100%" autocomplete="off"><div id="res" style="margin-top:8px"></div>
+    <div style="margin-top:16px"><button class="btn" id="useGps">${ic("i-locate")}Aktuellen GPS Standort verwenden</button></div>`);
   const q = $("#q"); q.focus(); let t;
   q.oninput = ()=>{ clearTimeout(t); t = setTimeout(async ()=>{
     if(q.value.trim().length<2){ $("#res").innerHTML=""; return; }
@@ -669,59 +860,58 @@ function openSearch(){
       $("#res").innerHTML = (j.results||[]).map((p,i)=>`<div class="res" data-i="${i}"><b>${esc(p.name)}</b><br><small>${esc([p.admin1,p.country].filter(Boolean).join(", "))}${p.elevation!=null?" · "+Math.round(p.elevation)+" m":""}</small></div>`).join("") || `<p class="muted">Nichts gefunden</p>`;
       document.querySelectorAll(".res").forEach(el=> el.onclick = ()=>{
         const p = j.results[+el.dataset.i];
-        S.gps = false; store.set("gps", false); $("#gpsToggle").checked = false;
-        S.loc = {lat:+p.latitude.toFixed(4), lon:+p.longitude.toFixed(4), name:p.name}; S.pos = null; store.set("loc", S.loc);
-        closeSheet(); boot(true);
+        S.gps=false; store.set("gps",false);
+        S.loc = {lat:+p.latitude.toFixed(4), lon:+p.longitude.toFixed(4), name:p.name}; S.pos=null; store.set("loc",S.loc);
+        closePage(); boot(true);
       });
     }catch(e){ $("#res").innerHTML = `<p class="muted">Suche nicht möglich</p>`; }
   }, 300); };
-  $("#useGps").onclick = ()=>{ S.gps = true; store.set("gps", true); $("#gpsToggle").checked = true; S.loc = null; closeSheet(); boot(true); };
+  $("#useGps").onclick = ()=>{ S.gps=true; store.set("gps",true); S.loc=null; closePage(); boot(true); };
 }
 
 /* ---------- Navigation ---------- */
 function show(v){
   document.querySelectorAll(".view").forEach(e=>e.classList.toggle("on", e.id==="v-"+v));
   document.querySelectorAll(".tabs button").forEach(b=>b.classList.toggle("on", b.dataset.v===v));
+  $("#page").classList.remove("on"); closeDay();
   window.scrollTo(0,0);
-  if(v==="home" && S.data) drawChart();
+  if(v==="fc" && S.data) requestAnimationFrame(()=>drawChart());
 }
+function markZoom(){ document.querySelectorAll("#zoomSeg button").forEach(b=> b.classList.toggle("on", b.dataset.z===S.zoom)); }
 document.querySelectorAll(".tabs button").forEach(b=> b.onclick = ()=> show(b.dataset.v));
+document.querySelectorAll("#zoomSeg button").forEach(b=> b.onclick = ()=>{ S.zoom=b.dataset.z; store.set("zoom",S.zoom); markZoom(); drawChart(); });
+markZoom();
 $("#placeBtn").onclick = openSearch;
-$("#searchOpen").onclick = openSearch;
 $("#refreshBtn").onclick = ()=> boot(true);
-$("#gpsToggle").checked = S.gps;
-$("#gpsToggle").onchange = e => { S.gps = e.target.checked; store.set("gps", S.gps); if(S.gps){ S.loc=null; } boot(true); };
-$("#levelSel").value = S.level;
-$("#levelSel").onchange = e => { S.level = +e.target.value; store.set("level", S.level); api("settings", {level:S.level}); };
-$("#pushToggle").onchange = e => { e.target.checked ? pushOn() : pushOff(); };
-$("#pushTest").onclick = async ()=>{ const r = await api("push_test", {}); if(r) toast(r.sent ? "Testnachricht gesendet" : "Keine Push Anmeldung gefunden. Bitte Warnung einschalten."); };
-$("#codeShow").onclick = ()=> sheet(`<h2 style="margin-top:0">Dein Gerätecode</h2><p class="muted">Halte ihn geheim. Wer ihn hat, sieht dein Tagebuch.</p><input type="text" readonly value="${esc(S.token||"noch nicht verbunden")}" style="width:100%" onclick="this.select()"><br><br><button class="btn pri" onclick="navigator.clipboard&&navigator.clipboard.writeText('${esc(S.token||"")}');toast('Kopiert')">Kopieren</button> <button class="btn" onclick="closeSheet()">Schließen</button>`);
-$("#codeEnter").onclick = ()=> { sheet(`<h2 style="margin-top:0">Code eingeben</h2><p class="muted">Das Tagebuch dieses Geräts wird durch das andere ersetzt.</p><input type="text" id="codeIn" style="width:100%" placeholder="Gerätecode"><br><br><button class="btn pri" id="codeOk">Übernehmen</button> <button class="btn" onclick="closeSheet()">Abbrechen</button>`);
-  $("#codeOk").onclick = async ()=>{ const c = $("#codeIn").value.trim(); if(c.length<20) return toast("Code ungültig"); S.token = c; store.set("token", c); S.diary = {}; store.set("diary", {}); closeSheet(); await syncBackend(); toast("Tagebuch übernommen"); };
-};
 
 /* ---------- Start ---------- */
+let busy = false;
 async function boot(force){
+  if(busy) return; busy = true;
+  $("#refreshBtn").classList.add("spin");
   const cache = store.get("cache", null);
-  if(!force && cache && cache.j && Date.now()-cache.t < 30*60*1000 && S.loc && !S.gps){
-    S.data = prep(cache.j); renderAll();
-  }
+  if(!S.data && cache && cache.j){ try{ S.loadedAt = cache.t; S.data = prep(cache.j); renderAll(); }catch(e){} }
   try{
-    $("#placeName").textContent = S.loc ? S.loc.name : "Standort wird gesucht";
+    if(!S.loc) $("#placeName").textContent = "Standort …"; else $("#placeName").textContent = S.loc.name;
     await resolveLocation();
     $("#placeName").textContent = S.loc.name;
     const j = await loadWeather();
-    S.data = prep(j); renderAll();
+    S.loadedAt = Date.now(); S.data = prep(j); renderAll();
   }catch(e){
-    if(cache && cache.j){ S.data = prep(cache.j); renderAll(); toast("Offline: zeige gespeicherte Daten"); }
-    else $("#homeBody").innerHTML = `<div class="err">Daten konnten nicht geladen werden: ${esc(e.message)}<br><br><button class="btn" onclick="boot(true)">Erneut versuchen</button></div>`;
+    if(cache && cache.j){ if(!S.data){ S.data = prep(cache.j); renderAll(); } toast("Offline: zeige gespeicherte Daten"); }
+    else $("#homeBody").innerHTML = `<div class="err">Daten konnten nicht geladen werden: ${esc(e.message)}<br><br><button class="btn sm" onclick="boot(true)">Erneut versuchen</button></div>`;
   }
+  $("#refreshBtn").classList.remove("spin"); busy = false;
   syncBackend();
 }
-function renderAll(){ renderHome(); renderForecast(); renderLog(); }
-window.addEventListener("resize", ()=>{ if(S.data && $("#v-home").classList.contains("on")) drawChart(); });
-document.addEventListener("visibilitychange", ()=>{ if(!document.hidden && S.data){ const c = store.get("cache",null); if(!c || Date.now()-c.t>30*60*1000) boot(true); } });
+function renderAll(){ renderHome(); renderForecast(); renderLog(); renderSettings(); if($("#v-fc").classList.contains("on")) drawChart(); }
+let timer = null;
+function startTimer(){ clearInterval(timer); if(S.interval>0) timer = setInterval(()=>{ if(!document.hidden) boot(true); }, S.interval*60*1000); }
+startTimer();
+window.addEventListener("resize", ()=>{ if(S.data && $("#v-fc").classList.contains("on")) drawChart(); });
+document.addEventListener("visibilitychange", ()=>{ if(!document.hidden && S.data && Date.now()-S.loadedAt > Math.max(5, S.interval||15)*60*1000) boot(true); });
 if("serviceWorker" in navigator){ navigator.serviceWorker.register("sw.js").catch(()=>{}); }
+renderSettings();
 boot(false);
 </script>
 </body>
