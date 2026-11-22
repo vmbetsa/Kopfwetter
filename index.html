@@ -1,0 +1,728 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Kopfwetter</title>
+<meta name="theme-color" content="#1d3d78">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Kopfwetter">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icon-180.png">
+<link rel="icon" href="icon-192.png">
+<style>
+:root{
+  --bg1:#1b3a74;--bg2:#3a6aa8;--card:rgba(10,25,60,.55);--card2:rgba(255,255,255,.08);
+  --line:rgba(255,255,255,.16);--txt:#f4f7ff;--mut:rgba(235,242,255,.68);
+  --l1:#f5d94a;--l2:#f2a65a;--l3:#e8596b;--up:#7b8cf0;--now:#5fd068;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;padding:0}
+html{background:#2b5a97}
+body{font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",Roboto,sans-serif;color:var(--txt);
+  background:linear-gradient(180deg,var(--bg1) 0%,#26508f 45%,var(--bg2) 100%) fixed;min-height:100vh;
+  padding:calc(env(safe-area-inset-top) + 10px) 0 calc(env(safe-area-inset-bottom) + 84px)}
+.wrap{max-width:720px;margin:0 auto;padding:0 14px}
+h2{font-size:17px;margin:22px 4px 10px;font-weight:700}
+.top{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:6px 4px 12px}
+.place{display:flex;align-items:center;gap:8px;font-size:26px;font-weight:700;cursor:pointer;min-width:0}
+.place span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.place svg{flex:none}
+.btn{border:1px solid var(--line);background:var(--card2);color:var(--txt);border-radius:14px;padding:9px 13px;font-size:15px;font-weight:600;cursor:pointer}
+.btn.pri{background:#4f86ff;border-color:#4f86ff}
+.btn.sm{padding:6px 10px;font-size:13px;border-radius:11px}
+.btn:disabled{opacity:.5}
+.cards{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:13px 15px;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
+.card .k{font-size:13px;color:var(--mut);display:flex;align-items:center;gap:6px}
+.card .v{font-size:30px;font-weight:800;letter-spacing:-.5px;margin-top:3px;display:flex;align-items:baseline;gap:5px}
+.card .v small{font-size:15px;font-weight:600}
+.card .s{font-size:13px;color:var(--mut);margin-top:3px}
+.span2{grid-column:1/3}
+.warn{display:flex;gap:12px;align-items:flex-start;border-radius:18px;padding:12px 14px;margin:12px 0 0;font-size:15px;line-height:1.35}
+.warn b{display:block;font-size:16px;margin-bottom:2px}
+.warn .ic{font-size:24px;line-height:1}
+.w3{background:rgba(232,89,107,.28);border:1px solid rgba(232,89,107,.7)}
+.w2{background:rgba(242,166,90,.25);border:1px solid rgba(242,166,90,.7)}
+.w0{background:rgba(95,208,104,.18);border:1px solid rgba(95,208,104,.55)}
+.legend{display:flex;flex-wrap:wrap;gap:12px;font-size:13px;color:var(--mut);margin:12px 4px 8px;align-items:center}
+.legend i{display:inline-block;width:16px;height:11px;border-radius:3px;margin-right:5px;vertical-align:-1px}
+.zoom{display:flex;gap:6px;margin-left:auto}
+.zoom button{border:1px solid var(--line);background:transparent;color:var(--txt);border-radius:10px;padding:5px 9px;font-size:13px;cursor:pointer}
+.zoom button.on{background:rgba(255,255,255,.2)}
+.chartbox{position:relative;border-radius:20px;overflow:hidden;background:rgba(8,20,50,.35);border:1px solid var(--line)}
+.readout{position:absolute;left:10px;right:10px;top:8px;z-index:3;display:flex;gap:8px;pointer-events:none}
+.readout div{background:rgba(15,35,80,.85);border:1px solid var(--line);border-radius:12px;padding:5px 9px;font-size:13px;line-height:1.25}
+.readout b{font-size:16px}
+.scroller{overflow-x:auto;overflow-y:hidden;-webkit-overflow-scrolling:touch;scrollbar-width:none;touch-action:pan-x}
+.scroller::-webkit-scrollbar{display:none}
+.yaxis{position:absolute;left:0;top:0;bottom:0;width:44px;pointer-events:none;z-index:2}
+.nowbtn{position:absolute;right:10px;bottom:34px;z-index:3;width:44px;height:44px;border-radius:50%;border:1px solid rgba(255,255,255,.5);background:rgba(255,255,255,.22);color:#fff;font-size:20px;cursor:pointer;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
+.days{display:flex;flex-direction:column;gap:6px}
+.day{display:grid;grid-template-columns:52px 30px 1fr auto;align-items:center;gap:8px;background:var(--card);border:1px solid var(--line);border-radius:15px;padding:9px 12px;cursor:pointer}
+.day .d{font-weight:700;font-size:15px}
+.day .d small{display:block;font-weight:500;color:var(--mut);font-size:12px}
+.day .wi{font-size:24px;text-align:center}
+.day .t{font-size:14px}
+.day .t small{color:var(--mut)}
+.chip{font-size:12px;font-weight:700;border-radius:9px;padding:4px 8px;white-space:nowrap;color:#1a1a1a}
+.c0{background:rgba(255,255,255,.16);color:var(--txt)}
+.c1{background:var(--l1)}.c2{background:var(--l2)}.c3{background:var(--l3);color:#fff}.cu{background:var(--up);color:#fff}
+.feel{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:10px}
+.feel button{border:1px solid var(--line);background:var(--card2);color:var(--txt);border-radius:14px;padding:10px 4px;font-size:13px;cursor:pointer}
+.feel button span{display:block;font-size:24px;margin-bottom:3px}
+.feel button.on{background:rgba(255,255,255,.28);border-color:#fff}
+.log{display:flex;flex-direction:column;gap:5px;margin-top:10px}
+.lr{display:grid;grid-template-columns:1fr auto auto;align-items:center;gap:8px;padding:7px 10px;border-radius:13px;background:var(--card2)}
+.lr .dd{font-size:14px}
+.lr .dd small{color:var(--mut)}
+.pick{display:flex;gap:4px}
+.pick button{width:32px;height:32px;border-radius:10px;border:1px solid var(--line);background:transparent;font-size:17px;cursor:pointer;padding:0;opacity:.45}
+.pick button.on{opacity:1;background:rgba(255,255,255,.25);border-color:#fff}
+.stat{font-size:15px;line-height:1.45}
+.stat .big{font-size:34px;font-weight:800}
+.bar{height:10px;border-radius:6px;background:rgba(255,255,255,.14);overflow:hidden;margin:4px 0 10px}
+.bar i{display:block;height:100%;border-radius:6px}
+.row{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 0;border-bottom:1px solid var(--line)}
+.row:last-child{border-bottom:0}
+.row .lbl{font-size:15px}
+.row .lbl small{display:block;color:var(--mut);font-size:12.5px;margin-top:2px}
+select,input[type=text]{background:rgba(255,255,255,.12);color:var(--txt);border:1px solid var(--line);border-radius:11px;padding:8px 10px;font-size:15px}
+select option{color:#000}
+.sw{position:relative;width:52px;height:31px;flex:none}
+.sw input{opacity:0;width:0;height:0}
+.sw span{position:absolute;inset:0;background:rgba(255,255,255,.22);border-radius:20px;transition:.2s;cursor:pointer}
+.sw span:before{content:"";position:absolute;width:25px;height:25px;left:3px;top:3px;background:#fff;border-radius:50%;transition:.2s}
+.sw input:checked+span{background:var(--now)}
+.sw input:checked+span:before{transform:translateX(21px)}
+.tabs{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(env(safe-area-inset-bottom) + 10px);z-index:20;display:flex;gap:4px;padding:6px;border-radius:26px;
+  background:rgba(70,120,200,.55);border:1px solid rgba(255,255,255,.3);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px)}
+.tabs button{border:0;background:transparent;color:#eaf2ff;font-size:12px;font-weight:600;padding:7px 14px;border-radius:20px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:2px}
+.tabs button span{font-size:20px}
+.tabs button.on{background:rgba(255,255,255,.25)}
+.view{display:none}.view.on{display:block}
+.modal{position:fixed;inset:0;z-index:50;background:rgba(0,0,0,.5);display:none;align-items:flex-end;justify-content:center}
+.modal.on{display:flex}
+.sheet{background:#22457f;border-radius:22px 22px 0 0;width:100%;max-width:720px;padding:18px 16px calc(env(safe-area-inset-bottom) + 18px);max-height:85vh;overflow:auto}
+.res{padding:11px 4px;border-bottom:1px solid var(--line);cursor:pointer}
+.res small{color:var(--mut)}
+.toast{position:fixed;left:50%;transform:translateX(-50%);top:calc(env(safe-area-inset-top) + 12px);z-index:60;background:#0f2550;border:1px solid var(--line);padding:10px 16px;border-radius:14px;font-size:14px;display:none;max-width:90%}
+.muted{color:var(--mut);font-size:13px;line-height:1.4}
+.load{text-align:center;padding:60px 0;color:var(--mut)}
+.err{background:rgba(232,89,107,.25);border:1px solid rgba(232,89,107,.6);border-radius:14px;padding:12px;margin:10px 0;font-size:14px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top">
+    <div class="place" id="placeBtn"><svg width="22" height="22" viewBox="0 0 24 24" fill="#fff"><path d="M21 3 3 10.5l7.5 2.5L13 21z"/></svg><span id="placeName">Standort wird gesucht</span></div>
+    <button class="btn sm" id="refreshBtn" aria-label="Aktualisieren">↻</button>
+  </div>
+
+  <!-- Übersicht -->
+  <section class="view on" id="v-home">
+    <div id="homeBody"><div class="load">Lade Luftdruck und Wetter …</div></div>
+  </section>
+
+  <!-- Vorschau -->
+  <section class="view" id="v-fc">
+    <h2>16 Tage Vorschau</h2>
+    <p class="muted" style="margin:-4px 4px 10px">Die Farbe zeigt den stärksten Druckabfall des Tages. Ab etwa Tag 7 ist die Vorhersage nur noch ein grober Trend.</p>
+    <div class="days" id="fcList"></div>
+  </section>
+
+  <!-- Tagebuch -->
+  <section class="view" id="v-log">
+    <div class="card" style="margin-top:6px">
+      <div style="font-weight:700;font-size:17px">Wie geht es deinem Kopf heute?</div>
+      <div class="feel" id="todayFeel"></div>
+    </div>
+    <h2>Auswertung</h2>
+    <div class="card stat" id="statBox"></div>
+    <h2>Verlauf</h2>
+    <p class="muted" style="margin:-4px 4px 6px">Tippe auf ein Gesicht, um einen Tag nachzutragen. Tage ohne Eintrag zählen nicht mit.</p>
+    <div class="log" id="logList"></div>
+  </section>
+
+  <!-- Einstellungen -->
+  <section class="view" id="v-set">
+    <h2>Warnungen</h2>
+    <div class="card">
+      <div class="row"><div class="lbl">Push Warnung<small id="pushInfo">Benachrichtigung morgens und abends, wenn ein Druckabfall kommt</small></div>
+        <label class="sw"><input type="checkbox" id="pushToggle"><span></span></label></div>
+      <div class="row"><div class="lbl">Warnen ab<small>Stufe des Druckabfalls</small></div>
+        <select id="levelSel"><option value="2">Mäßig und Stark</option><option value="3">Nur Stark</option></select></div>
+      <div class="row"><div class="lbl">Testnachricht<small>Prüft, ob Benachrichtigungen ankommen</small></div>
+        <button class="btn sm" id="pushTest">Senden</button></div>
+    </div>
+    <h2>Standort</h2>
+    <div class="card">
+      <div class="row"><div class="lbl">GPS verwenden<small>Aktueller Standort bei jedem Öffnen</small></div>
+        <label class="sw"><input type="checkbox" id="gpsToggle" checked><span></span></label></div>
+      <div class="row"><div class="lbl">Ort suchen<small>Fester Ort statt GPS</small></div>
+        <button class="btn sm" id="searchOpen">Suchen</button></div>
+    </div>
+    <h2>Stufen</h2>
+    <div class="card muted" style="font-size:14px">
+      Bewertet wird die Änderung des Luftdrucks innerhalb von 3 Stunden:<br>
+      <b style="color:var(--l1)">Leicht</b> fällt um 0,6 bis 1 hPa · <b style="color:var(--l2)">Mäßig</b> um 1 bis 2 hPa · <b style="color:var(--l3)">Stark</b> um mehr als 2 hPa · <b style="color:var(--up)">Anstieg</b> steigt um mehr als 1 hPa.<br>Für die Tagesfarbe zählt zusätzlich der Abfall über 24 Stunden: ab 5 hPa Mäßig, ab 8 hPa Stark.<br><br>
+      Daten: Open Meteo (Wettermodelle von DWD, ECMWF u. a.). Die Höhe stammt vom GPS deines Handys und aus einem Geländemodell.
+    </div>
+    <h2>Gerät</h2>
+    <div class="card">
+      <div class="row"><div class="lbl">Gerätecode<small>Damit kannst du dein Tagebuch auf einem zweiten Gerät öffnen</small></div>
+        <button class="btn sm" id="codeShow">Anzeigen</button></div>
+      <div class="row"><div class="lbl">Code eingeben<small>Tagebuch von einem anderen Gerät übernehmen</small></div>
+        <button class="btn sm" id="codeEnter">Eingeben</button></div>
+    </div>
+    <p class="muted" style="margin:16px 4px">Hinweis: Kopfwetter ersetzt keine ärztliche Beratung.</p>
+  </section>
+</div>
+
+<nav class="tabs">
+  <button data-v="home" class="on"><span>📈</span>Druck</button>
+  <button data-v="fc"><span>📅</span>Vorschau</button>
+  <button data-v="log"><span>🤕</span>Tagebuch</button>
+  <button data-v="set"><span>⚙️</span>Mehr</button>
+</nav>
+
+<div class="modal" id="modal"><div class="sheet" id="sheet"></div></div>
+<div class="toast" id="toast"></div>
+
+<script>
+"use strict";
+const FN = "https://ladedtlgqknszotcgvfq.supabase.co/functions/v1/kopfwetter";
+const DEFAULT_LOC = {lat:48.1374, lon:11.5755, name:"München"};
+const LV = {name:["Ruhig","Leicht","Mäßig","Stark"], col:["rgba(255,255,255,0)","#f5d94a","#f2a65a","#e8596b"]};
+const UPCOL = "#7b8cf0";
+const WD = ["So","Mo","Di","Mi","Do","Fr","Sa"];
+const $ = s => document.querySelector(s);
+
+/* ---------- Speicher ---------- */
+const store = {
+  get(k, d){ try{ const v = localStorage.getItem("kw_"+k); return v==null ? d : JSON.parse(v); }catch(e){ return d; } },
+  set(k, v){ try{ localStorage.setItem("kw_"+k, JSON.stringify(v)); }catch(e){} }
+};
+let S = {
+  loc: store.get("loc", null),          // {lat,lon,name}
+  gps: store.get("gps", true),
+  diary: store.get("diary", {}),        // {"2026-11-22": 2}
+  token: store.get("token", null),
+  level: store.get("level", 2),
+  data: null, pos: null, zoom: store.get("zoom","2d")
+};
+
+function toast(t, ms){ const e=$("#toast"); e.textContent=t; e.style.display="block"; clearTimeout(toast.h); toast.h=setTimeout(()=>e.style.display="none", ms||2600); }
+const fmt1 = n => n.toFixed(1).replace(".",",");
+const fmt0 = n => Math.round(n).toString();
+function esc(s){ return String(s).replace(/[&<>"]/g, c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c])); }
+
+/* ---------- Wetter Symbole ---------- */
+function wIcon(code, day){
+  if(code==null) return "";
+  if(code===0) return day===0 ? "🌙" : "☀️";
+  if(code===1) return day===0 ? "🌙" : "🌤️";
+  if(code===2) return day===0 ? "☁️" : "⛅";
+  if(code===3) return "☁️";
+  if(code===45||code===48) return "🌫️";
+  if(code>=51&&code<=57) return "🌦️";
+  if(code>=61&&code<=67) return "🌧️";
+  if(code>=71&&code<=77) return "🌨️";
+  if(code>=80&&code<=82) return "🌦️";
+  if(code===85||code===86) return "🌨️";
+  if(code>=95) return "⛈️";
+  return "☁️";
+}
+function wText(code){
+  const m={0:"Klar",1:"Überwiegend klar",2:"Teils bewölkt",3:"Bedeckt",45:"Nebel",48:"Reifnebel",51:"Leichter Niesel",53:"Niesel",55:"Starker Niesel",56:"Gefrierender Niesel",57:"Gefrierender Niesel",61:"Leichter Regen",63:"Regen",65:"Starker Regen",66:"Gefrierender Regen",67:"Gefrierender Regen",71:"Leichter Schnee",73:"Schnee",75:"Starker Schnee",77:"Schneegriesel",80:"Regenschauer",81:"Regenschauer",82:"Starke Schauer",85:"Schneeschauer",86:"Schneeschauer",95:"Gewitter",96:"Gewitter mit Hagel",99:"Gewitter mit Hagel"};
+  return m[code]||"";
+}
+
+/* ---------- Druck Stufen ---------- */
+function level(d){ // Änderung in 3 h
+  if(d<=-2) return 3; if(d<=-1) return 2; if(d<=-0.6) return 1; if(d>=1) return -1; return 0;
+}
+
+/* ---------- Standort ---------- */
+function getGPS(){
+  return new Promise((res, rej)=>{
+    if(!navigator.geolocation) return rej(new Error("kein GPS"));
+    navigator.geolocation.getCurrentPosition(p=>res(p), e=>rej(e), {enableHighAccuracy:true, timeout:15000, maximumAge:120000});
+  });
+}
+async function reverseName(lat, lon){
+  try{
+    const r = await fetch(`https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${lat}&longitude=${lon}&localityLanguage=de`);
+    const j = await r.json();
+    return j.city || j.locality || j.principalSubdivision || "Mein Standort";
+  }catch(e){ return "Mein Standort"; }
+}
+async function resolveLocation(){
+  if(S.gps){
+    try{
+      const p = await getGPS();
+      S.pos = p.coords;
+      const lat = +p.coords.latitude.toFixed(4), lon = +p.coords.longitude.toFixed(4);
+      const moved = !S.loc || Math.abs(S.loc.lat-lat)>0.02 || Math.abs(S.loc.lon-lon)>0.02 || !S.loc.name;
+      if(moved){ S.loc = {lat, lon, name: await reverseName(lat, lon)}; }
+      else { S.loc = {lat, lon, name: S.loc.name}; }
+      store.set("loc", S.loc);
+      return;
+    }catch(e){
+      if(!S.loc){ S.loc = {...DEFAULT_LOC}; toast("GPS nicht verfügbar, zeige München"); }
+    }
+  }
+  if(!S.loc) S.loc = {...DEFAULT_LOC};
+}
+
+/* ---------- Daten laden ---------- */
+async function loadWeather(){
+  const {lat, lon} = S.loc;
+  const u = "https://api.open-meteo.com/v1/forecast?latitude="+lat+"&longitude="+lon+
+    "&hourly=pressure_msl,surface_pressure,temperature_2m,precipitation,weather_code,is_day"+
+    "&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_sum,precipitation_probability_max"+
+    "&current=temperature_2m,pressure_msl,surface_pressure,weather_code,is_day,apparent_temperature"+
+    "&past_days=92&forecast_days=16&timezone=auto";
+  const r = await fetch(u);
+  if(!r.ok) throw new Error("Wetterdienst antwortet nicht ("+r.status+")");
+  const j = await r.json();
+  store.set("cache", {t:Date.now(), loc:S.loc, j});
+  return j;
+}
+
+function prep(j){
+  const h = j.hourly, n = h.time.length;
+  const off = j.utc_offset_seconds||0;
+  const nowLocal = new Date(Date.now()+off*1000).toISOString().slice(0,13);
+  let nowI = h.time.findIndex(t=>t.slice(0,13)===nowLocal);
+  if(nowI<0) nowI = n-1;
+  const P = h.pressure_msl.map((v,i)=> v==null ? null : v);
+  // Lücken füllen
+  for(let i=0;i<n;i++){ if(P[i]==null){ let a=i-1; while(a>=0&&P[a]==null)a--; let b=i+1; while(b<n&&P[b]==null)b++; P[i]= a>=0&&b<n ? P[a]+(P[b]-P[a])*(i-a)/(b-a) : (a>=0?P[a]:(b<n?P[b]:1013)); } }
+  const hourOf = t => +t.slice(11,13);
+  const blocks = [];
+  for(let i=0;i<n-3;i++){
+    if(hourOf(h.time[i])%3!==0) continue;
+    const d = P[i+3]-P[i];
+    blocks.push({i, d, lv: level(d)});
+  }
+  // Tageswerte
+  const days = {};
+  for(const b of blocks){
+    const day = h.time[b.i].slice(0,10);
+    const o = days[day] || (days[day]={max:0, drop:0, up:false});
+    if(b.lv>o.max) o.max=b.lv;
+    if(b.lv===-1) o.up=true;
+    if(b.d<o.drop) o.drop=b.d;
+  }
+  for(const day in days){
+    const i0 = h.time.indexOf(day+"T00:00");
+    if(i0>=0 && i0+24<n){ const d24 = P[i0+24]-P[i0]; const o = days[day]; o.d24 = d24;
+      const l24 = d24<=-8 ? 3 : d24<=-5 ? 2 : 0; if(l24>o.max){ o.max = l24; } }
+  }
+  return {j, h, n, P, nowI, blocks, days, off};
+}
+
+/* ---------- Warnung ---------- */
+function upcoming(D, hours){
+  const end = D.nowI+hours;
+  const list = D.blocks.filter(b=>b.i+3>D.nowI && b.i<end && b.lv>=2);
+  if(!list.length) return null;
+  // Fenster zusammenfassen
+  const win=[]; let cur=null;
+  for(const b of list){
+    if(cur && b.i===cur.e){ cur.e=b.i+3; cur.lv=Math.max(cur.lv,b.lv); cur.drop+=b.d; }
+    else { cur={s:b.i,e:b.i+3,lv:b.lv,drop:b.d}; win.push(cur); }
+  }
+  win.sort((a,b)=> b.lv-a.lv || a.drop-b.drop);
+  return win[0];
+}
+function relDay(D, i){
+  const t = D.h.time[i], today = D.h.time[D.nowI].slice(0,10);
+  const dd = Math.round((Date.parse(t.slice(0,10))-Date.parse(today))/864e5);
+  if(dd===0) return "Heute"; if(dd===1) return "Morgen"; if(dd===2) return "Übermorgen";
+  const dt = new Date(t.slice(0,10)+"T12:00:00"); return WD[dt.getDay()]+" "+dt.getDate()+"."+(dt.getMonth()+1)+".";
+}
+
+/* ---------- Übersicht ---------- */
+function renderHome(){
+  const D = S.data, j = D.j, c = j.current||{};
+  const pNow = c.pressure_msl ?? D.P[D.nowI];
+  const p3 = D.P[Math.max(0,D.nowI-3)];
+  const tr = pNow - p3;
+  const arrow = tr<=-0.6 ? "↘" : tr>=0.6 ? "↗" : "→";
+  const kind = pNow>=1020 ? "Hochdruck" : pNow<=1005 ? "Tiefdruck" : "Normaler Druck";
+  const w = upcoming(D, 48);
+  let warn;
+  if(w){
+    const t0 = D.h.time[w.s].slice(11,16), t1 = D.h.time[Math.min(w.e,D.n-1)].slice(11,16);
+    warn = `<div class="warn w${w.lv}"><div class="ic">${w.lv===3?"⚠️":"🔶"}</div><div><b>${relDay(D,w.s)}: ${LV.name[w.lv]}er Druckabfall</b>${t0} bis ${t1} Uhr fällt der Luftdruck um ${fmt1(Math.abs(w.drop))} hPa. Viel trinken, regelmäßig essen und gut schlafen kann helfen.</div></div>`;
+  }else{
+    warn = `<div class="warn w0"><div class="ic">✅</div><div><b>Keine stärkeren Druckwechsel</b>In den nächsten 48 Stunden ist kein mäßiger oder starker Druckabfall zu erwarten.</div></div>`;
+  }
+  // Höhe
+  let alt = "";
+  const gpsAlt = S.pos && S.pos.altitude!=null ? S.pos.altitude : null;
+  if(gpsAlt!=null){
+    alt = `<div class="v">${fmt0(gpsAlt)}<small>m</small></div><div class="s">GPS Höhe${S.pos.altitudeAccuracy?` (± ${fmt0(S.pos.altitudeAccuracy)} m)`:""} · Gelände ${fmt0(j.elevation)} m ü. NN</div>`;
+  }else{
+    alt = `<div class="v">${fmt0(j.elevation)}<small>m</small></div><div class="s">Gelände ü. NN${S.gps?" · GPS Höhe nicht verfügbar":" · fester Ort"}</div>`;
+  }
+  const sp = c.surface_pressure ?? (j.hourly.surface_pressure||[])[D.nowI];
+  $("#homeBody").innerHTML = `
+    <div class="cards">
+      <div class="card"><div class="k">Luftdruck (Meereshöhe)</div><div class="v">${fmt1(pNow)}<small>hPa ${arrow}</small></div><div class="s">${kind} · ${tr>=0?"+":"↓ "}${fmt1(Math.abs(tr))} hPa in 3 h</div></div>
+      <div class="card"><div class="k">Wetter jetzt</div><div class="v">${c.temperature_2m!=null?fmt0(c.temperature_2m):"?"}<small>°C</small> <span style="font-size:28px">${wIcon(c.weather_code,c.is_day)}</span></div><div class="s">${wText(c.weather_code)}${c.apparent_temperature!=null?" · gefühlt "+fmt0(c.apparent_temperature)+"°":""}</div></div>
+      <div class="card"><div class="k">Deine Höhe</div>${alt}</div>
+      <div class="card"><div class="k">Druck bei dir</div><div class="v">${sp!=null?fmt0(sp):"?"}<small>hPa</small></div><div class="s">tatsächlicher Druck auf deiner Höhe</div></div>
+    </div>
+    ${warn}
+    <div class="legend"><span><i style="background:var(--l1)"></i>Leicht</span><span><i style="background:var(--l2)"></i>Mäßig</span><span><i style="background:var(--l3)"></i>Stark</span><span><i style="background:var(--up)"></i>Anstieg</span><span>🤕 Kopfschmerz</span>
+      <div class="zoom"><button data-z="2d">1,5 T</button><button data-z="7d">7 T</button><button data-z="all">Alles</button></div></div>
+    <div class="chartbox" id="chartbox">
+      <div class="readout" id="readout"></div>
+      <div class="scroller" id="scroller"></div>
+      <svg class="yaxis" id="yaxis"></svg>
+      <button class="nowbtn" id="nowBtn" aria-label="Jetzt">⟲</button>
+    </div>
+    <p class="muted" style="margin:8px 4px">Gestrichelt: gemessener Verlauf der letzten 92 Tage. Durchgezogen: Vorhersage für 16 Tage. Grüne Linie: jetzt. Zum Ablesen über die Grafik wischen oder tippen.</p>
+  `;
+  document.querySelectorAll(".zoom button").forEach(b=>{
+    b.classList.toggle("on", b.dataset.z===S.zoom);
+    b.onclick = ()=>{ S.zoom=b.dataset.z; store.set("zoom",S.zoom); renderHome(); };
+  });
+  drawChart();
+}
+
+/* ---------- Grafik ---------- */
+let CH = null;
+function drawChart(focusIndex){
+  const D = S.data, n = D.n, P = D.P, h = D.h;
+  const box = $("#chartbox"), sc = $("#scroller");
+  const W = box.clientWidth, H = 320;
+  const pph = S.zoom==="2d" ? W/36 : S.zoom==="7d" ? W/(24*7) : Math.max(1.1, W/(24*30));
+  const top = 58, bot = 40, ch = H-top-bot;
+  let mn = Infinity, mx = -Infinity;
+  for(const v of P){ if(v<mn)mn=v; if(v>mx)mx=v; }
+  mn = Math.floor((mn-2)/5)*5; mx = Math.ceil((mx+2)/5)*5;
+  const y = v => top + (mx-v)/(mx-mn)*ch;
+  const X = i => i*pph;
+  const TW = Math.ceil(n*pph);
+  let s = `<svg width="${TW}" height="${H}" xmlns="http://www.w3.org/2000/svg" style="display:block">`;
+  s += `<defs><linearGradient id="fut" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".06"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient></defs>`;
+  // Zukunft heller
+  s += `<rect x="${X(D.nowI)}" y="0" width="${TW-X(D.nowI)}" height="${H}" fill="url(#fut)"/>`;
+  // Bänder zusammengefasst
+  const bl = D.blocks; let k = 0;
+  while(k<bl.length){
+    const lv = bl[k].lv; let e = k;
+    while(e+1<bl.length && bl[e+1].lv===lv && bl[e+1].i===bl[e].i+3) e++;
+    if(lv!==0){
+      const x0 = X(bl[k].i), x1 = X(bl[e].i+3);
+      const past = bl[e].i+3<=D.nowI;
+      const col = lv===-1 ? UPCOL : LV.col[lv];
+      s += `<rect x="${x0}" y="${top-8}" width="${x1-x0}" height="${ch+8}" fill="${col}" opacity="${past?0.22:0.42}"/>`;
+      s += `<rect x="${x0}" y="${top-12}" width="${x1-x0}" height="4" fill="${col}" opacity="${past?0.6:1}"/>`;
+      if(x1-x0>=46 && lv!==-1){ s += `<text x="${(x0+x1)/2}" y="${top+10}" fill="#fff" font-size="12" font-weight="700" text-anchor="middle" opacity="${past?0.6:0.95}">${LV.name[lv]}</text>`; }
+    }
+    k = e+1;
+  }
+  // Raster
+  for(let v=mn; v<=mx; v+=5){ s += `<line x1="0" x2="${TW}" y1="${y(v)}" y2="${y(v)}" stroke="rgba(255,255,255,.18)" stroke-dasharray="4 4"/>`; }
+  // Tage
+  const dayStep = S.zoom==="all" ? 7 : 1;
+  for(let i=0;i<n;i++){
+    const t = h.time[i]; const hr = +t.slice(11,13);
+    if(hr===0){
+      const dt = new Date(t.slice(0,10)+"T12:00:00");
+      s += `<line x1="${X(i)}" x2="${X(i)}" y1="${top-12}" y2="${H-bot+4}" stroke="rgba(255,255,255,${S.zoom==="all"?0.12:0.35})"/>`;
+      if(S.zoom!=="all" || dt.getDay()===1){
+        s += `<text x="${X(i)+5}" y="${H-12}" fill="#fff" font-size="13" font-weight="700">${WD[dt.getDay()]} ${dt.getDate()}.${S.zoom==="all"?(dt.getMonth()+1)+".":""}</text>`;
+      }
+    } else if(S.zoom==="2d" && hr%6===0){
+      s += `<line x1="${X(i)}" x2="${X(i)}" y1="${top-8}" y2="${H-bot}" stroke="rgba(255,255,255,.15)" stroke-dasharray="3 5"/>`;
+      s += `<text x="${X(i)+4}" y="${H-12}" fill="rgba(255,255,255,.75)" font-size="12">${hr}</text>`;
+    }
+  }
+  // Wetter Symbole
+  if(S.zoom!=="all"){
+    const st = S.zoom==="2d" ? 3 : 12;
+    for(let i=0;i<n;i++){
+      const hr = +h.time[i].slice(11,13);
+      if(hr%st!==0 || (S.zoom==="7d" && hr!==12)) continue;
+      s += `<text x="${X(i)+(S.zoom==="2d"?pph*1.5:0)}" y="${H-bot-8}" font-size="${S.zoom==="2d"?17:16}" text-anchor="middle" opacity="${i<D.nowI?0.55:1}">${wIcon(h.weather_code[i], h.is_day[i])}</text>`;
+    }
+  }
+  // Kopfschmerz Markierungen
+  for(const day in S.diary){
+    const v = S.diary[day]; if(!v) continue;
+    const i0 = h.time.indexOf(day+"T00:00"); if(i0<0) continue;
+    const xm = X(i0+12);
+    const col = v===3?"#ff4d6d":v===2?"#ff9f5a":"#ffd84d";
+    s += `<line x1="${xm}" x2="${xm}" y1="${top-6}" y2="${H-bot}" stroke="${col}" stroke-width="1.5" stroke-dasharray="2 4" opacity=".7"/>`;
+    s += `<text x="${xm}" y="${top+(S.zoom==="all"?2:28)}" font-size="${S.zoom==="all"?12:18}" text-anchor="middle">🤕</text>`;
+  }
+  // Linie Vergangenheit / Zukunft
+  let pa = "", fu = "";
+  for(let i=0;i<=D.nowI;i++) pa += (i?"L":"M")+X(i).toFixed(1)+" "+y(P[i]).toFixed(1);
+  for(let i=D.nowI;i<n;i++) fu += (i>D.nowI?"L":"M")+X(i).toFixed(1)+" "+y(P[i]).toFixed(1);
+  s += `<path d="${pa}" fill="none" stroke="rgba(255,255,255,.85)" stroke-width="3" stroke-dasharray="${S.zoom==="all"?"0":"5 6"}" stroke-linecap="round"/>`;
+  s += `<path d="${fu}" fill="none" stroke="#fff" stroke-width="3.2" stroke-linejoin="round"/>`;
+  // Jetzt
+  s += `<line x1="${X(D.nowI)}" x2="${X(D.nowI)}" y1="${top-12}" y2="${H-bot+4}" stroke="var(--now)" stroke-width="2.5"/>`;
+  // Cursor
+  s += `<g id="cur" style="display:none"><line id="curL" y1="${top-12}" y2="${H-bot}" stroke="#fff" stroke-width="3"/><circle id="curC" r="8" fill="#fff"/></g>`;
+  s += `</svg>`;
+  sc.innerHTML = s;
+  // y Achse
+  let ya = "";
+  for(let v=mn; v<=mx; v+=5){ ya += `<text x="6" y="${y(v)-4}" fill="rgba(255,255,255,.85)" font-size="12">${v}</text>`; }
+  $("#yaxis").innerHTML = ya; $("#yaxis").setAttribute("height", H);
+  CH = {pph, y, X, top, bot, H};
+  const target = focusIndex!=null ? focusIndex : D.nowI;
+  sc.scrollLeft = Math.max(0, X(target) - W*0.35);
+  setCursor(target);
+  const pick = ev => {
+    const r = sc.getBoundingClientRect();
+    const cx = (ev.touches?ev.touches[0].clientX:ev.clientX) - r.left + sc.scrollLeft;
+    setCursor(Math.max(0, Math.min(n-1, Math.round(cx/pph))));
+  };
+  sc.onclick = pick;
+  sc.onpointermove = ev => { if(ev.pointerType==="mouse") pick(ev); };
+  let scT; sc.onscroll = ()=>{ clearTimeout(scT); scT=setTimeout(()=>{ setCursor(Math.max(0,Math.min(n-1,Math.round((sc.scrollLeft+W*0.35)/pph)))); },60); };
+  $("#nowBtn").onclick = ()=>{ sc.scrollTo({left:Math.max(0,X(D.nowI)-W*0.35),behavior:"smooth"}); };
+}
+function setCursor(i){
+  const D = S.data, h = D.h; if(!CH) return;
+  const g = document.getElementById("cur"); if(!g) return;
+  g.style.display = "";
+  const x = CH.X(i), yy = CH.y(D.P[i]);
+  const L = document.getElementById("curL"), C = document.getElementById("curC");
+  L.setAttribute("x1",x); L.setAttribute("x2",x); C.setAttribute("cx",x); C.setAttribute("cy",yy);
+  const t = h.time[i], dt = new Date(t.slice(0,10)+"T12:00:00");
+  const b = D.blocks.find(b=>b.i<=i && i<b.i+3);
+  const lvTxt = b ? (b.lv===-1 ? "Anstieg" : LV.name[b.lv]) : "";
+  const d3 = b ? b.d : 0;
+  $("#readout").innerHTML = `<div>${WD[dt.getDay()]} ${dt.getDate()}.${dt.getMonth()+1}.<br><b>${t.slice(11,16)}</b></div>`+
+    `<div><b>${fmt1(D.P[i])}</b> hPa<br>${d3<0?"↓":"↑"} ${fmt1(Math.abs(d3))} in 3 h · ${lvTxt}</div>`+
+    `<div>${wIcon(h.weather_code[i],h.is_day[i])} <b>${fmt0(h.temperature_2m[i])}°</b><br>${h.precipitation[i]>0?fmt1(h.precipitation[i])+" mm":"trocken"}</div>`;
+}
+
+/* ---------- Vorschau ---------- */
+function chipFor(o){
+  if(!o) return `<span class="chip c0">?</span>`;
+  if(o.max>0) return `<span class="chip c${o.max}">${LV.name[o.max]}</span>`;
+  if(o.up) return `<span class="chip cu">Anstieg</span>`;
+  return `<span class="chip c0">Ruhig</span>`;
+}
+function renderForecast(){
+  const D = S.data, d = D.j.daily, today = D.h.time[D.nowI].slice(0,10);
+  let html = "";
+  for(let k=0;k<d.time.length;k++){
+    const day = d.time[k]; if(day<today) continue;
+    const dt = new Date(day+"T12:00:00");
+    const o = D.days[day];
+    const lbl = day===today ? "Heute" : WD[dt.getDay()];
+    const rain = d.precipitation_sum[k], pp = d.precipitation_probability_max ? d.precipitation_probability_max[k] : null;
+    html += `<div class="day" data-day="${day}">
+      <div class="d">${lbl}<small>${dt.getDate()}.${dt.getMonth()+1}.</small></div>
+      <div class="wi">${wIcon(d.weather_code[k],1)}</div>
+      <div class="t"><b>${fmt0(d.temperature_2m_max[k])}°</b> <small>/ ${fmt0(d.temperature_2m_min[k])}°</small><br><small>${rain>0.1?"🌧 "+fmt1(rain)+" mm":"trocken"}${pp!=null&&rain>0.1?" · "+pp+" %":""}</small>${o&&o.d24!=null?"<br><small>Druck "+(o.d24<0?"↓ ":"↑ ")+fmt1(Math.abs(o.d24))+" hPa in 24 h</small>":""}</div>
+      ${chipFor(o)}</div>`;
+  }
+  $("#fcList").innerHTML = html;
+  document.querySelectorAll(".day").forEach(el=> el.onclick = ()=>{
+    const i = D.h.time.indexOf(el.dataset.day+"T12:00");
+    if(S.zoom==="all"){ S.zoom="2d"; store.set("zoom","2d"); }
+    show("home"); renderHome(); drawChart(i);
+  });
+}
+
+/* ---------- Tagebuch ---------- */
+const FACES = [["🙂","Keine"],["😐","Leicht"],["😣","Mittel"],["😫","Stark"]];
+function setDiary(day, v){
+  if(S.diary[day]===v){ delete S.diary[day]; api("diary_del",{day}); }
+  else { S.diary[day]=v; api("diary_set",{day, intensity:v}); }
+  store.set("diary", S.diary);
+  renderLog(); if(S.data) { renderHome(); }
+}
+function renderLog(){
+  if(!S.data) return;
+  const D = S.data, today = D.h.time[D.nowI].slice(0,10);
+  $("#todayFeel").innerHTML = FACES.map((f,i)=>`<button data-v="${i}" class="${S.diary[today]===i?"on":""}"><span>${f[0]}</span>${f[1]}</button>`).join("");
+  $("#todayFeel").querySelectorAll("button").forEach(b=> b.onclick = ()=> setDiary(today, +b.dataset.v));
+  let html = "";
+  const base = new Date(today+"T12:00:00");
+  for(let k=1;k<=60;k++){
+    const dt = new Date(base.getTime()-k*864e5);
+    const day = dt.toISOString().slice(0,10);
+    const o = D.days[day];
+    html += `<div class="lr"><div class="dd"><b>${WD[dt.getDay()]} ${dt.getDate()}.${dt.getMonth()+1}.</b></div>${chipFor(o)}
+      <div class="pick" data-day="${day}">${FACES.map((f,i)=>`<button data-v="${i}" class="${S.diary[day]===i?"on":""}">${f[0]}</button>`).join("")}</div></div>`;
+  }
+  $("#logList").innerHTML = html;
+  document.querySelectorAll(".pick").forEach(p=> p.querySelectorAll("button").forEach(b=> b.onclick = ()=> setDiary(p.dataset.day, +b.dataset.v)));
+  renderStats();
+}
+function renderStats(){
+  const D = S.data, today = D.h.time[D.nowI].slice(0,10);
+  const isDrop = day => { // Druckabfall am Tag oder am Abend davor
+    const o = D.days[day]; if(o && o.max>=2) return true;
+    const prev = new Date(Date.parse(day+"T12:00:00")-864e5).toISOString().slice(0,10);
+    const i18 = D.h.time.indexOf(prev+"T18:00");
+    return i18>=0 && D.blocks.some(b=>b.i>=i18 && b.i<i18+6 && b.lv>=2);
+  };
+  const entries = Object.keys(S.diary).filter(d=>d<=today && D.days[d]);
+  const pain = entries.filter(d=>S.diary[d]>0), free = entries.filter(d=>S.diary[d]===0);
+  if(entries.length<5){
+    $("#statBox").innerHTML = `<div>Trage ein paar Tage ein, dann zeigt dir Kopfwetter hier, ob deine Kopfschmerzen mit Druckabfällen zusammenfallen.</div><div class="muted" style="margin-top:8px">Bisher ${entries.length} Einträge. Aussagekräftig wird es ab etwa 3 bis 4 Wochen.</div>`;
+    return;
+  }
+  const pd = pain.filter(isDrop).length, fd = free.filter(isDrop).length;
+  const pr = pain.length ? pd/pain.length : 0, fr = free.length ? fd/free.length : 0;
+  let verdict;
+  if(pain.length<3) verdict = "Noch zu wenige Kopfschmerztage für eine Aussage.";
+  else if(pr>=fr+0.25) verdict = "Deutlicher Zusammenhang: Deine Kopfschmerzen treten auffällig oft bei Druckabfall auf.";
+  else if(pr>=fr+0.1) verdict = "Leichter Zusammenhang erkennbar. Weiter eintragen, dann wird es klarer.";
+  else verdict = "Bisher kein klarer Zusammenhang mit dem Luftdruck. Vielleicht spielen andere Auslöser eine größere Rolle.";
+  $("#statBox").innerHTML = `
+    <div class="big">${Math.round(pr*100)} %</div>
+    <div>deiner ${pain.length} Kopfschmerztage fielen auf einen Tag mit mäßigem oder starkem Druckabfall (oder den Abend davor).</div>
+    <div class="bar"><i style="width:${pr*100}%;background:var(--l3)"></i></div>
+    <div>Zum Vergleich: an <b>${Math.round(fr*100)} %</b> deiner ${free.length} Tage ohne Kopfschmerzen gab es ebenfalls einen Druckabfall.</div>
+    <div class="bar"><i style="width:${fr*100}%;background:var(--now)"></i></div>
+    <div style="font-weight:700">${verdict}</div>`;
+}
+
+/* ---------- Backend (Supabase) ---------- */
+async function api(action, body){
+  if(!S.token && action!=="register") return null;
+  try{
+    const r = await fetch(FN, {method:"POST", headers:{"Content-Type":"application/json", ...(S.token?{"x-kw-token":S.token}:{})}, body: JSON.stringify({action, ...(body||{})})});
+    const j = await r.json().catch(()=>({}));
+    if(!r.ok) throw new Error(j.error || ("Fehler "+r.status));
+    return j;
+  }catch(e){ console.warn(action, e); if(action.startsWith("push")) toast(e.message); return null; }
+}
+async function syncBackend(){
+  if(!S.token){
+    const r = await api("register", {});
+    if(r && r.token){ S.token = r.token; store.set("token", S.token); }
+    else return;
+  }
+  const r = await api("sync", {lat:S.loc.lat, lon:S.loc.lon, place:S.loc.name, local: S.diary});
+  if(r && r.diary){
+    S.diary = r.diary; store.set("diary", S.diary);
+    if(r.level){ S.level = r.level; store.set("level", S.level); $("#levelSel").value = S.level; }
+    if(r.vapid) store.set("vapid", r.vapid);
+    $("#pushToggle").checked = !!r.pushOn && typeof Notification!=="undefined" && Notification.permission==="granted";
+    if(S.data){ renderLog(); }
+  }
+}
+
+/* ---------- Push ---------- */
+function b64u(s){ const p="=".repeat((4-s.length%4)%4); const b=atob((s+p).replace(/-/g,"+").replace(/_/g,"/")); return Uint8Array.from([...b].map(c=>c.charCodeAt(0))); }
+async function pushOn(){
+  const standalone = window.matchMedia("(display-mode: standalone)").matches || navigator.standalone;
+  if(/iPhone|iPad/.test(navigator.userAgent) && !standalone){
+    sheet(`<h2 style="margin-top:0">Erst zum Homebildschirm hinzufügen</h2><p class="stat">Auf dem iPhone funktionieren Benachrichtigungen nur, wenn Kopfwetter als App auf dem Homebildschirm liegt:</p>
+      <p class="stat">1. Unten in Safari auf <b>Teilen</b> tippen<br>2. <b>Zum Home Bildschirm</b> wählen<br>3. Kopfwetter vom Homebildschirm öffnen und hier die Warnung einschalten</p><button class="btn pri" onclick="closeSheet()">Verstanden</button>`);
+    $("#pushToggle").checked = false; return;
+  }
+  if(!("serviceWorker" in navigator) || !("PushManager" in window)){ toast("Dieses Gerät unterstützt keine Push Nachrichten"); $("#pushToggle").checked=false; return; }
+  if(typeof Notification==="undefined"){ toast("Benachrichtigungen werden nicht unterstützt"); $("#pushToggle").checked=false; return; }
+  const perm = await Notification.requestPermission();
+  if(perm!=="granted"){ toast("Benachrichtigungen wurden nicht erlaubt"); $("#pushToggle").checked=false; return; }
+  const reg = await navigator.serviceWorker.ready;
+  const vapid = store.get("vapid", null);
+  if(!vapid){ toast("Server nicht erreichbar, bitte später erneut"); $("#pushToggle").checked=false; return; }
+  let sub = await reg.pushManager.getSubscription();
+  if(!sub) sub = await reg.pushManager.subscribe({userVisibleOnly:true, applicationServerKey:b64u(vapid)});
+  const js = sub.toJSON();
+  const r = await api("push_sub", {endpoint:js.endpoint, p256dh:js.keys.p256dh, auth:js.keys.auth});
+  if(r){ toast("Warnungen sind eingeschaltet"); } else { $("#pushToggle").checked=false; }
+}
+async function pushOff(){
+  try{
+    const reg = await navigator.serviceWorker.ready;
+    const sub = await reg.pushManager.getSubscription();
+    if(sub){ await api("push_unsub",{endpoint:sub.endpoint}); await sub.unsubscribe(); }
+    toast("Warnungen ausgeschaltet");
+  }catch(e){}
+}
+
+/* ---------- Dialoge ---------- */
+function sheet(html){ $("#sheet").innerHTML = html; $("#modal").classList.add("on"); }
+function closeSheet(){ $("#modal").classList.remove("on"); }
+$("#modal").onclick = e => { if(e.target.id==="modal") closeSheet(); };
+function openSearch(){
+  sheet(`<h2 style="margin-top:0">Ort suchen</h2><input type="text" id="q" placeholder="z. B. Garmisch" style="width:100%" autocomplete="off"><div id="res" style="margin-top:8px"></div>
+    <button class="btn" style="margin-top:12px" id="useGps">📍 Aktuellen GPS Standort verwenden</button>`);
+  const q = $("#q"); q.focus(); let t;
+  q.oninput = ()=>{ clearTimeout(t); t = setTimeout(async ()=>{
+    if(q.value.trim().length<2){ $("#res").innerHTML=""; return; }
+    try{
+      const r = await fetch("https://geocoding-api.open-meteo.com/v1/search?count=8&language=de&name="+encodeURIComponent(q.value.trim()));
+      const j = await r.json();
+      $("#res").innerHTML = (j.results||[]).map((p,i)=>`<div class="res" data-i="${i}"><b>${esc(p.name)}</b><br><small>${esc([p.admin1,p.country].filter(Boolean).join(", "))}${p.elevation!=null?" · "+Math.round(p.elevation)+" m":""}</small></div>`).join("") || `<p class="muted">Nichts gefunden</p>`;
+      document.querySelectorAll(".res").forEach(el=> el.onclick = ()=>{
+        const p = j.results[+el.dataset.i];
+        S.gps = false; store.set("gps", false); $("#gpsToggle").checked = false;
+        S.loc = {lat:+p.latitude.toFixed(4), lon:+p.longitude.toFixed(4), name:p.name}; S.pos = null; store.set("loc", S.loc);
+        closeSheet(); boot(true);
+      });
+    }catch(e){ $("#res").innerHTML = `<p class="muted">Suche nicht möglich</p>`; }
+  }, 300); };
+  $("#useGps").onclick = ()=>{ S.gps = true; store.set("gps", true); $("#gpsToggle").checked = true; S.loc = null; closeSheet(); boot(true); };
+}
+
+/* ---------- Navigation ---------- */
+function show(v){
+  document.querySelectorAll(".view").forEach(e=>e.classList.toggle("on", e.id==="v-"+v));
+  document.querySelectorAll(".tabs button").forEach(b=>b.classList.toggle("on", b.dataset.v===v));
+  window.scrollTo(0,0);
+  if(v==="home" && S.data) drawChart();
+}
+document.querySelectorAll(".tabs button").forEach(b=> b.onclick = ()=> show(b.dataset.v));
+$("#placeBtn").onclick = openSearch;
+$("#searchOpen").onclick = openSearch;
+$("#refreshBtn").onclick = ()=> boot(true);
+$("#gpsToggle").checked = S.gps;
+$("#gpsToggle").onchange = e => { S.gps = e.target.checked; store.set("gps", S.gps); if(S.gps){ S.loc=null; } boot(true); };
+$("#levelSel").value = S.level;
+$("#levelSel").onchange = e => { S.level = +e.target.value; store.set("level", S.level); api("settings", {level:S.level}); };
+$("#pushToggle").onchange = e => { e.target.checked ? pushOn() : pushOff(); };
+$("#pushTest").onclick = async ()=>{ const r = await api("push_test", {}); if(r) toast(r.sent ? "Testnachricht gesendet" : "Keine Push Anmeldung gefunden. Bitte Warnung einschalten."); };
+$("#codeShow").onclick = ()=> sheet(`<h2 style="margin-top:0">Dein Gerätecode</h2><p class="muted">Halte ihn geheim. Wer ihn hat, sieht dein Tagebuch.</p><input type="text" readonly value="${esc(S.token||"noch nicht verbunden")}" style="width:100%" onclick="this.select()"><br><br><button class="btn pri" onclick="navigator.clipboard&&navigator.clipboard.writeText('${esc(S.token||"")}');toast('Kopiert')">Kopieren</button> <button class="btn" onclick="closeSheet()">Schließen</button>`);
+$("#codeEnter").onclick = ()=> { sheet(`<h2 style="margin-top:0">Code eingeben</h2><p class="muted">Das Tagebuch dieses Geräts wird durch das andere ersetzt.</p><input type="text" id="codeIn" style="width:100%" placeholder="Gerätecode"><br><br><button class="btn pri" id="codeOk">Übernehmen</button> <button class="btn" onclick="closeSheet()">Abbrechen</button>`);
+  $("#codeOk").onclick = async ()=>{ const c = $("#codeIn").value.trim(); if(c.length<20) return toast("Code ungültig"); S.token = c; store.set("token", c); S.diary = {}; store.set("diary", {}); closeSheet(); await syncBackend(); toast("Tagebuch übernommen"); };
+};
+
+/* ---------- Start ---------- */
+async function boot(force){
+  const cache = store.get("cache", null);
+  if(!force && cache && cache.j && Date.now()-cache.t < 30*60*1000 && S.loc && !S.gps){
+    S.data = prep(cache.j); renderAll();
+  }
+  try{
+    $("#placeName").textContent = S.loc ? S.loc.name : "Standort wird gesucht";
+    await resolveLocation();
+    $("#placeName").textContent = S.loc.name;
+    const j = await loadWeather();
+    S.data = prep(j); renderAll();
+  }catch(e){
+    if(cache && cache.j){ S.data = prep(cache.j); renderAll(); toast("Offline: zeige gespeicherte Daten"); }
+    else $("#homeBody").innerHTML = `<div class="err">Daten konnten nicht geladen werden: ${esc(e.message)}<br><br><button class="btn" onclick="boot(true)">Erneut versuchen</button></div>`;
+  }
+  syncBackend();
+}
+function renderAll(){ renderHome(); renderForecast(); renderLog(); }
+window.addEventListener("resize", ()=>{ if(S.data && $("#v-home").classList.contains("on")) drawChart(); });
+document.addEventListener("visibilitychange", ()=>{ if(!document.hidden && S.data){ const c = store.get("cache",null); if(!c || Date.now()-c.t>30*60*1000) boot(true); } });
+if("serviceWorker" in navigator){ navigator.serviceWorker.register("sw.js").catch(()=>{}); }
+boot(false);
+</script>
+</body>
+</html>
