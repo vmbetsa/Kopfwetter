@@ -54,6 +54,7 @@ svg.wi{width:30px;height:30px;flex:none}
 .warn .ico{width:38px;height:38px;border-radius:12px;display:grid;place-items:center;flex:none}
 .w3{background:rgba(238,93,112,.28);border:1px solid rgba(238,93,112,.75)} .w3 .ico{background:var(--l3)}
 .w2{background:rgba(242,166,90,.24);border:1px solid rgba(242,166,90,.75)} .w2 .ico{background:var(--l2)}
+.w4{background:rgba(194,24,91,.32);border:1px solid rgba(230,60,130,.85)} .w4 .ico{background:#c2185b}
 .w0{background:rgba(95,208,104,.17);border:1px solid rgba(95,208,104,.6)} .w0 .ico{background:var(--now)}
 h3{font-size:19px;font-weight:800;margin:24px 4px 10px;letter-spacing:-.2px;display:flex;align-items:center;justify-content:space-between}
 h3 small{font-size:13px;font-weight:600;color:var(--mut)}
@@ -82,7 +83,7 @@ h3 small{font-size:13px;font-weight:600;color:var(--mut)}
 .tbar{position:relative;height:5px;border-radius:3px;background:rgba(255,255,255,.15);margin-top:6px;overflow:hidden}
 .tbar i{position:absolute;top:0;bottom:0;border-radius:3px;background:linear-gradient(90deg,#7cc4ff,#ffd25a,#ff9a5a)}
 .chip{font-size:12px;font-weight:800;border-radius:10px;padding:5px 9px;white-space:nowrap;color:#1a1a1a}
-.c0{background:rgba(255,255,255,.18);color:#fff}.c1{background:var(--l1)}.c2{background:var(--l2)}.c3{background:var(--l3);color:#fff}.cu{background:var(--up);color:#fff}
+.c0{background:rgba(255,255,255,.18);color:#fff}.c4{background:#c2185b;color:#fff}.c1{background:var(--l1)}.c2{background:var(--l2)}.c3{background:var(--l3);color:#fff}.cu{background:var(--up);color:#fff}
 .feel{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:12px}
 .feel button{border:1px solid var(--line);background:rgba(255,255,255,.08);color:#fff;border-radius:16px;padding:12px 4px 10px;font-size:13px;font-weight:600;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:7px}
 .feel button i{width:18px;height:18px;border-radius:50%;display:block;box-shadow:0 0 0 3px rgba(255,255,255,.12)}
@@ -98,6 +99,16 @@ h3 small{font-size:13px;font-weight:600;color:var(--mut)}
 .stat .big{font-size:38px;font-weight:800;letter-spacing:-1px}
 .meter{height:9px;border-radius:6px;background:rgba(255,255,255,.14);overflow:hidden;margin:6px 0 12px}
 .meter i{display:block;height:100%;border-radius:6px}
+.chip b{font-size:13px;margin-right:3px}
+.ibar{position:relative;height:12px;border-radius:7px;margin:14px 0 6px;background:linear-gradient(90deg,#6fcf7a 0 20%,#f5d94a 20% 40%,#f2a65a 40% 65%,#ee5d70 65% 85%,#c2185b 85% 100%)}
+.ibar b{position:absolute;top:-6px;width:8px;height:24px;border-radius:4px;background:#fff;box-shadow:0 0 0 2px rgba(0,0,0,.3);transform:translateX(-50%)}
+.iscale{position:relative;height:16px;font-size:11.5px;color:var(--mut)}
+.iscale span{position:absolute;transform:translateX(-50%)}
+.idx3{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:10px}
+.idx3 button{background:rgba(255,255,255,.08);border:1px solid var(--line);border-radius:16px;padding:10px 8px;color:#fff;font:inherit;cursor:pointer;text-align:left}
+.idx3 .n{font-size:30px;font-weight:800;letter-spacing:-.5px;line-height:1.1}
+.idx3 .m{height:5px;border-radius:3px;background:rgba(255,255,255,.15);margin-top:6px;overflow:hidden}
+.idx3 .m i{display:block;height:100%}
 /* Einstellungen */
 .group{background:var(--glass);border:1px solid var(--line);border-radius:20px;overflow:hidden}
 .srow{display:flex;align-items:center;gap:12px;padding:13px 14px;border-bottom:1px solid rgba(255,255,255,.12);cursor:pointer;color:#fff;background:none;border-left:0;border-right:0;border-top:0;width:100%;text-align:left;font:inherit}
@@ -218,7 +229,7 @@ select option{color:#000}
 
   <section class="view" id="v-fc">
     <div class="bar2">
-      <div class="legend"><span><i style="background:var(--l1)"></i>Leicht</span><span><i style="background:var(--l2)"></i>Mäßig</span><span><i style="background:var(--l3)"></i>Stark</span><span><i style="background:var(--up)"></i>Anstieg</span></div>
+      <div class="legend"><span><i style="background:var(--l1)"></i>Leicht</span><span><i style="background:var(--l2)"></i>Mäßig</span><span><i style="background:var(--l3)"></i>Stark</span><span><i style="background:#c2185b"></i>Sehr stark</span><span><i style="background:var(--up)"></i>Anstieg</span></div>
       <div class="seg" id="zoomSeg"><button data-z="2d">36 h</button><button data-z="7d">7 Tage</button><button data-z="all">Alles</button></div>
     </div>
     <div class="chartbox" id="chartbox">
@@ -266,7 +277,8 @@ select option{color:#000}
 "use strict";
 const FN = "https://ladedtlgqknszotcgvfq.supabase.co/functions/v1/kopfwetter";
 const DEFAULT_LOC = {lat:48.1374, lon:11.5755, name:"München"};
-const LV = {name:["Ruhig","Leicht","Mäßig","Stark"], col:["transparent","#f5d94a","#f2a65a","#ee5d70"]};
+const LV = {name:["Ruhig","Leicht","Mäßig","Stark","Sehr stark"], col:["#6fcf7a","#f5d94a","#f2a65a","#ee5d70","#c2185b"]};
+const CUTS = [[0,19,"Ruhig","kaum Änderung"],[20,39,"Leicht","merkbar, für die meisten unkritisch"],[40,64,"Mäßig","deutlicher Wechsel, empfindliche Menschen spüren ihn oft"],[65,84,"Stark","schneller Abfall, typisch vor Wetterumschwung oder Föhn"],[85,100,"Sehr stark","sehr schneller Abfall, etwa vor Sturm oder Gewitterfront"]];
 const UPCOL = "#8a9bff";
 const WD = ["So","Mo","Di","Mi","Do","Fr","Sa"];
 const WDL = ["Sonntag","Montag","Dienstag","Mittwoch","Donnerstag","Freitag","Samstag"];
@@ -334,7 +346,11 @@ function wText(code){
   const m={0:"Klar",1:"Überwiegend klar",2:"Teils bewölkt",3:"Bedeckt",45:"Nebel",48:"Reifnebel",51:"Leichter Niesel",53:"Niesel",55:"Starker Niesel",56:"Gefrierender Niesel",57:"Gefrierender Niesel",61:"Leichter Regen",63:"Regen",65:"Starker Regen",66:"Gefrierender Regen",67:"Gefrierender Regen",71:"Leichter Schnee",73:"Schnee",75:"Starker Schnee",77:"Schneegriesel",80:"Regenschauer",81:"Regenschauer",82:"Starke Schauer",85:"Schneeschauer",86:"Schneeschauer",95:"Gewitter",96:"Gewitter mit Hagel",99:"Gewitter mit Hagel"};
   return m[code]||"";
 }
-function level(d){ if(d<=-2) return 3; if(d<=-1) return 2; if(d<=-0.6) return 1; if(d>=1) return -1; return 0; }
+// Druckindex 0 bis 100: 3 hPa Abfall in 3 Stunden oder 12 hPa in 24 Stunden ergeben 100
+const idx3 = d => Math.round(Math.min(100, Math.max(0, -d/3*100)));
+const idx24 = d => Math.round(Math.min(100, Math.max(0, -d/12*100)));
+const catOf = x => x>=85?4 : x>=65?3 : x>=40?2 : x>=20?1 : 0;
+function level(d){ if(d>=1) return -1; return catOf(idx3(d)); }
 
 /* ---------- Standort ---------- */
 function getGPS(){
@@ -386,18 +402,21 @@ function prep(j){
   const P = h.pressure_msl.slice();
   for(let i=0;i<n;i++){ if(P[i]==null){ let a=i-1; while(a>=0&&P[a]==null)a--; let b=i+1; while(b<n&&P[b]==null)b++; P[i]= a>=0&&b<n ? P[a]+(P[b]-P[a])*(i-a)/(b-a) : (a>=0?P[a]:(b<n?P[b]:1013)); } }
   const blocks = [];
-  for(let i=0;i<n-3;i++){ if(+h.time[i].slice(11,13)%3!==0) continue; const d=P[i+3]-P[i]; blocks.push({i, d, lv:level(d)}); }
+  for(let i=0;i<n-3;i++){ if(+h.time[i].slice(11,13)%3!==0) continue; const d=P[i+3]-P[i]; blocks.push({i, d, lv:level(d), idx:idx3(d)}); }
   const days = {};
   for(const b of blocks){
     const day = h.time[b.i].slice(0,10);
-    const o = days[day] || (days[day]={max:0, drop:0, dropI:b.i, up:false});
+    const o = days[day] || (days[day]={max:0, drop:0, dropI:b.i, up:false, idx:0, idx3:0});
+    if(b.idx>o.idx3) o.idx3=b.idx;
     if(b.lv>o.max) o.max=b.lv;
     if(b.lv===-1) o.up=true;
     if(b.d<o.drop){ o.drop=b.d; o.dropI=b.i; }
   }
   for(const day in days){
     const i0 = h.time.indexOf(day+"T00:00");
-    if(i0>=0 && i0+24<n){ const d24=P[i0+24]-P[i0], o=days[day]; o.d24=d24; const l24 = d24<=-8?3:d24<=-5?2:0; if(l24>o.max) o.max=l24; }
+    const o=days[day]; o.idx=o.idx3;
+    if(i0>=0 && i0+24<n){ const d24=P[i0+24]-P[i0]; o.d24=d24; o.idx24=idx24(d24); if(o.idx24>o.idx) o.idx=o.idx24; }
+    o.max = catOf(o.idx);
   }
   return {j, h, n, P, nowI, blocks, days, off, today: h.time[nowI].slice(0,10)};
 }
@@ -409,8 +428,8 @@ function upcoming(D, hours){
   if(!list.length) return null;
   const win=[]; let cur=null;
   for(const b of list){
-    if(cur && b.i===cur.e){ cur.e=b.i+3; cur.lv=Math.max(cur.lv,b.lv); cur.drop+=b.d; }
-    else { cur={s:b.i,e:b.i+3,lv:b.lv,drop:b.d}; win.push(cur); }
+    if(cur && b.i===cur.e){ cur.e=b.i+3; cur.lv=Math.max(cur.lv,b.lv); cur.idx=Math.max(cur.idx,b.idx); cur.drop+=b.d; }
+    else { cur={s:b.i,e:b.i+3,lv:b.lv,idx:b.idx,drop:b.d}; win.push(cur); }
   }
   win.sort((a,b)=> b.lv-a.lv || a.drop-b.drop);
   return win[0];
@@ -482,7 +501,7 @@ function renderHome(){
   let warn;
   if(w){
     const t0 = D.h.time[w.s].slice(11,16), t1 = D.h.time[Math.min(w.e,D.n-1)].slice(11,16);
-    warn = `<div class="warn w${w.lv}"><div class="ico">${ic("i-alert")}</div><div><b>${relDay(D,w.s)}: ${LV.name[w.lv]}er Druckabfall</b>${t0} bis ${t1} Uhr fällt der Luftdruck um ${fmt1(Math.abs(w.drop))} hPa. Viel trinken, regelmäßig essen und gut schlafen kann helfen.</div></div>`;
+    warn = `<div class="warn w${w.lv}"><div class="ico">${ic("i-alert")}</div><div><b>${relDay(D,w.s)}: ${LV.name[w.lv]}er Druckabfall · Index ${w.idx}</b>${t0} bis ${t1} Uhr fällt der Luftdruck um ${fmt1(Math.abs(w.drop))} hPa. Viel trinken, regelmäßig essen und gut schlafen kann helfen.</div></div>`;
   }else{
     warn = `<div class="warn w0"><div class="ico">${ic("i-check")}</div><div><b>Keine stärkeren Druckwechsel</b>In den nächsten 48 Stunden ist kein mäßiger oder starker Druckabfall zu erwarten.</div></div>`;
   }
@@ -501,6 +520,7 @@ function renderHome(){
         <div class="s">${kind} · Meereshöhe</div></div>
     </div>
     ${warn}
+    ${idxCard(D)}
     <div class="grid2">
       <div class="card"><div class="k">${ic("i-thermo")}Wetter jetzt</div><div class="v">${c.temperature_2m!=null?fmt0(c.temperature_2m):"?"}<small>°C</small><span style="margin-left:auto">${wIcon(c.weather_code,c.is_day,"wi")}</span></div><div class="s">${wText(c.weather_code)}${c.apparent_temperature!=null?" · gefühlt "+fmt0(c.apparent_temperature)+"°":""}</div></div>
       <div class="card"><div class="k">${ic("i-mountain")}Deine Höhe</div>${alt}</div>
@@ -513,7 +533,18 @@ function renderHome(){
     <div class="feel" id="homeFeel">${FACES.map((f,i)=>`<button data-v="${i}" class="${feel===i?"on":""}"><i class="dot${i}"></i>${f}</button>`).join("")}</div>
     <p class="muted" style="margin:14px 4px 0">Stand ${new Date(S.loadedAt).toLocaleTimeString("de-DE",{hour:"2-digit",minute:"2-digit"})} Uhr · Daten: Open Meteo</p>`;
   $("#goFc").onclick = ()=> show("fc");
+  document.querySelectorAll(".idx3 button").forEach(b=> b.onclick = ()=> openDay(b.dataset.day));
   $("#homeFeel").querySelectorAll("button").forEach(b=> b.onclick = ()=> setDiary(today, +b.dataset.v));
+}
+
+function idxCard(D){
+  const ks = fcDays().slice(0,3), d = D.j.daily;
+  return `<div class="card" style="margin-top:10px"><div class="k">${ic("i-gauge")}Druckindex <span style="margin-left:auto;font-size:12px">0 ruhig · 100 sehr stark</span></div><div class="idx3">${ks.map((k,n)=>{
+    const day = d.time[k], o = D.days[day]||{idx:0,max:0};
+    return `<button data-day="${day}"><div class="s" style="margin:0">${["Heute","Morgen","Übermorgen"][n]}</div><div class="n" style="color:${o.max>0?LV.col[o.max]:"#fff"}">${o.idx}</div><div class="s" style="margin:0">${LV.name[o.max]}</div><div class="m"><i style="width:${Math.max(3,o.idx)}%;background:${LV.col[o.max]}"></i></div></button>`;}).join("")}</div></div>`;
+}
+function idxScale(v){
+  return `<div class="ibar">${v!=null?`<b style="left:${Math.min(98.5,Math.max(1.5,v))}%"></b>`:""}</div><div class="iscale">${[0,20,40,65,85,100].map(x=>`<span style="left:${x===0?2:x===100?97:x}%">${x}</span>`).join("")}</div>`;
 }
 
 /* ---------- Große Grafik ---------- */
@@ -540,10 +571,11 @@ function drawChart(focusIndex){
   while(k<bl.length){
     const lv = bl[k].lv; let e = k;
     while(e+1<bl.length && bl[e+1].lv===lv && bl[e+1].i===bl[e].i+3) e++;
+    let mi = 0; for(let q=k;q<=e;q++) mi = Math.max(mi, bl[q].idx);
     if(lv!==0){
       const x0 = X(bl[k].i), x1 = X(bl[e].i+3), past = bl[e].i+3<=D.nowI, col = lv===-1 ? UPCOL : LV.col[lv];
       s += `<rect x="${x0}" y="${top-26}" width="${x1-x0}" height="${ch+26}" fill="${col}" opacity="${past?0.2:0.4}"/>`;
-      if(x1-x0>=70 && lv!==-1) s += `<g opacity="${past?0.55:1}"><circle cx="${x0+18}" cy="${top-6}" r="11" fill="#fff"/><path d="M${x0+12} ${top-10}l4 5 3-2 5 6" stroke="${col}" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/><text x="${x0+35}" y="${top-1}" fill="#fff" font-size="15" font-weight="700">${LV.name[lv]}</text></g>`;
+      if(x1-x0>=(lv===4?110:80) && lv!==-1) s += `<g opacity="${past?0.55:1}"><circle cx="${x0+18}" cy="${top-6}" r="11" fill="#fff"/><path d="M${x0+12} ${top-10}l4 5 3-2 5 6" stroke="${col}" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/><text x="${x0+35}" y="${top-1}" fill="#fff" font-size="15" font-weight="700">${LV.name[lv]} ${mi}</text></g>`;
       else if(x1-x0>=28 && lv!==-1) s += `<circle cx="${(x0+x1)/2}" cy="${top-6}" r="5" fill="#fff" opacity="${past?0.55:1}"/>`;
     }
     k = e+1;
@@ -603,16 +635,16 @@ function setCursor(i){
   const t = h.time[i], dt = dOf(t.slice(0,10)), b = blockAt(i), d3 = b ? b.d : 0;
   const arrow = d3<=-0.3 ? "↘" : d3>=0.3 ? "↗" : "→";
   $("#readout").innerHTML = `<div class="p">${dt.getDate()}.${dt.getMonth()+1}. (${WD[dt.getDay()]})<br><b>${t.slice(11,16)}</b></div>`+
-    `<div class="p" style="flex:1">${b&&b.lv!==0?(b.lv===-1?"Anstieg":LV.name[b.lv])+" · ":""}${fmt1(Math.abs(d3))} hPa in 3 h<br><b>${fmt1(D.P[i])}</b> hPa ${arrow}</div>`+
+    `<div class="p" style="flex:1">${b?(b.lv===-1?"Anstieg":"Index "+b.idx+" · "+LV.name[b.lv]):""}<br><b>${fmt1(D.P[i])}</b> hPa ${arrow} <span style="font-size:12px">${d3<0?"↓":"↑"}${fmt1(Math.abs(d3))}/3 h</span></div>`+
     `<div class="p" style="display:flex;align-items:center;gap:6px">${wIcon(h.weather_code[i],h.is_day[i])}<div><b>${fmt0(h.temperature_2m[i])}°</b><br>${h.precipitation[i]>0?fmt1(h.precipitation[i])+" mm":"trocken"}</div></div>`;
 }
 
 /* ---------- Vorschau Liste ---------- */
 function chipFor(o){
   if(!o) return `<span class="chip c0">?</span>`;
-  if(o.max>0) return `<span class="chip c${o.max}">${LV.name[o.max]}</span>`;
-  if(o.up) return `<span class="chip cu">Anstieg</span>`;
-  return `<span class="chip c0">Ruhig</span>`;
+  if(o.max>0) return `<span class="chip c${o.max}"><b>${o.idx}</b>${LV.name[o.max]}</span>`;
+  if(o.up) return `<span class="chip cu"><b>${o.idx}</b>Anstieg</span>`;
+  return `<span class="chip c0"><b>${o.idx}</b>Ruhig</span>`;
 }
 function fcDays(){ const d = S.data.j.daily; return d.time.map((t,k)=>k).filter(k=>d.time[k]>=S.data.today); }
 function renderForecast(){
@@ -639,6 +671,7 @@ function openDay(day){
   const o = D.days[day]||{max:0,drop:0}, dt = dOf(day), h = D.h;
   const rain = d.precipitation_sum[k], pp = d.precipitation_probability_max ? d.precipitation_probability_max[k] : null;
   const dropT = o.dropI!=null ? h.time[o.dropI].slice(11,16)+" bis "+h.time[Math.min(D.n-1,o.dropI+3)].slice(11,16)+" Uhr" : "";
+  const idxBox = `<div class="card" style="margin-top:12px"><div class="k">${ic("i-gauge")}Druckindex</div><div class="v" style="color:${o.max>0?LV.col[o.max]:"#fff"}">${o.idx??0}<small style="color:#fff">von 100 · ${LV.name[o.max]}</small></div>${idxScale(o.idx??0)}<div class="s">Schnellster Abfall: ↓ ${fmt1(Math.abs(Math.min(0,o.drop)))} hPa in 3 h (Index ${o.idx3??0})${o.d24!=null?` · Tag: ${o.d24<0?"↓":"↑"} ${fmt1(Math.abs(o.d24))} hPa in 24 h (Index ${o.idx24??0})`:""}</div></div>`;
   const advice = o.max>=2 ? `<div class="warn w${o.max}" style="margin-top:12px"><div class="ico">${ic("i-alert")}</div><div><b>${LV.name[o.max]}er Druckabfall</b>Am stärksten ${dropT}: ↓ ${fmt1(Math.abs(o.drop))} hPa in 3 Stunden${o.d24!=null?`, über den ganzen Tag ${o.d24<0?"↓":"↑"} ${fmt1(Math.abs(o.d24))} hPa`:""}.</div></div>`
     : `<div class="warn w0" style="margin-top:12px"><div class="ico">${ic("i-check")}</div><div><b>${o.max===1?"Nur leichte Druckschwankung":o.up?"Luftdruck steigt":"Ruhiger Luftdruck"}</b>${o.d24!=null?`Über den Tag ${o.d24<0?"↓":"↑"} ${fmt1(Math.abs(o.d24))} hPa.`:""}</div></div>`;
   let hrs = "";
@@ -651,6 +684,7 @@ function openDay(day){
   $("#sheet").innerHTML = `<div class="grab"></div>
     <div class="dhead">${wIcon(d.weather_code[k],1)}<div class="ttl"><b>${day===D.today?"Heute":WDL[dt.getDay()]}, ${dLabel(day)}</b><small>${wText(d.weather_code[k])}</small></div>${chipFor(o)}</div>
     ${advice}
+    ${idxBox}
     <div class="grid2">
       <div class="card"><div class="k">${ic("i-thermo")}Temperatur</div><div class="v">${fmt0(d.temperature_2m_max[k])}°<small style="color:var(--mut)">/ ${fmt0(d.temperature_2m_min[k])}°</small></div></div>
       <div class="card"><div class="k">${ic("i-drop")}Regen</div><div class="v">${fmt1(rain)}<small>mm</small></div><div class="s">${pp!=null?pp+" % Regenrisiko":""}</div></div>
@@ -706,12 +740,14 @@ function renderLog(){
 }
 function renderStats(){
   const D = S.data, today = D.today;
+  const prevEve = day => { const prev = new Date(Date.parse(day+"T12:00:00")-864e5).toISOString().slice(0,10); const i18 = D.h.time.indexOf(prev+"T18:00"); let m=0; if(i18>=0) for(const b of D.blocks) if(b.i>=i18 && b.i<i18+6) m=Math.max(m,b.idx); return m; };
   const isDrop = day => {
     const o = D.days[day]; if(o && o.max>=2) return true;
     const prev = new Date(Date.parse(day+"T12:00:00")-864e5).toISOString().slice(0,10);
     const i18 = D.h.time.indexOf(prev+"T18:00");
     return i18>=0 && D.blocks.some(b=>b.i>=i18 && b.i<i18+6 && b.lv>=2);
   };
+  const avgIdx = arr => arr.length ? Math.round(arr.reduce((a,d)=>a+Math.max(D.days[d].idx, prevEve(d)),0)/arr.length) : "?";
   const entries = Object.keys(S.diary).filter(d=>d<=today && D.days[d]);
   const pain = entries.filter(d=>S.diary[d]>0), free = entries.filter(d=>S.diary[d]===0);
   if(entries.length<5){
@@ -728,7 +764,8 @@ function renderStats(){
     <div class="meter"><i style="width:${pr*100}%;background:var(--l3)"></i></div>
     <div>Zum Vergleich: an <b>${Math.round(fr*100)} %</b> deiner ${free.length} Tage ohne Kopfschmerzen gab es ebenfalls einen Druckabfall.</div>
     <div class="meter"><i style="width:${fr*100}%;background:var(--now)"></i></div>
-    <div style="font-weight:800">${verdict}</div>`;
+    <div style="font-weight:800">${verdict}</div>
+    <div class="muted" style="margin-top:10px">Durchschnittlicher Druckindex an Kopfschmerztagen: <b style="color:#fff">${avgIdx(pain)}</b> · an Tagen ohne: <b style="color:#fff">${avgIdx(free)}</b></div>`;
 }
 
 /* ---------- Backend ---------- */
@@ -784,7 +821,7 @@ function renderSettings(){
     row("theme","#5b6cf0","i-palette","Farbthema","",tn)+
     row("warn","#ee5d70","i-bell","Warnungen","Push bei Druckabfall",S.pushOn?"An":"Aus")+
     row("loc","#2fa8e0","i-pin","Standort und Aktualisierung","",S.gps?"GPS":esc(S.loc?S.loc.name:""))+
-    row("levels","#f2a65a","i-layers","Stufen erklärt","")+
+    row("levels","#f2a65a","i-layers","Druckindex erklärt","Skala von 0 bis 100")+
     row("device","#5fb36a","i-phone","Gerät und Tagebuch","")+
     row("about","#8a8fa8","i-info","Über Kopfwetter","");
   document.querySelectorAll("#setMain .srow").forEach(b=> b.onclick = ()=> openPage(b.dataset.p));
@@ -807,7 +844,7 @@ function openPage(p){
   if(p==="warn"){
     pageShell("Warnungen", `
       <div class="opt" style="cursor:default"><span class="tx"><b>Push Warnung</b><small>Morgens gegen 6:30 und abends gegen 17:30 Uhr prüft der Server die Vorhersage für die nächsten 30 Stunden und meldet sich nur, wenn ein Druckabfall kommt.</small></span><label class="sw"><input type="checkbox" id="pushToggle" ${S.pushOn?"checked":""}><span></span></label></div>
-      <div class="opt" style="cursor:default"><span class="tx"><b>Warnen ab</b><small>Stufe des Druckabfalls</small></span><select id="levelSel"><option value="2">Mäßig</option><option value="3">Stark</option></select></div>
+      <div class="opt" style="cursor:default"><span class="tx"><b>Warnen ab</b><small>Stufe des Druckabfalls</small></span><select id="levelSel"><option value="2">Index 40 (Mäßig)</option><option value="3">Index 65 (Stark)</option><option value="4">Index 85 (Sehr stark)</option></select></div>
       <div style="margin-top:22px"><button class="btn" id="pushTest">${ic("i-bell")}Testnachricht senden</button></div>
       <p class="help" style="margin-top:18px">Auf dem iPhone funktionieren Benachrichtigungen nur, wenn Kopfwetter über <b>Teilen</b> und <b>Zum Home Bildschirm</b> installiert ist und von dort geöffnet wird.</p>`);
     $("#levelSel").value = S.level;
@@ -828,9 +865,12 @@ function openPage(p){
     document.querySelectorAll(".opt[data-iv]").forEach(b=> b.onclick = ()=>{ S.interval=+b.dataset.iv; store.set("interval",S.interval); startTimer(); openPage("loc"); });
   }
   if(p==="levels"){
-    pageShell("Stufen erklärt", `<p class="help">Bewertet wird, wie stark sich der Luftdruck innerhalb von 3 Stunden ändert:</p>
-      ${[[1,"Leicht","fällt um 0,6 bis 1 hPa"],[2,"Mäßig","fällt um 1 bis 2 hPa"],[3,"Stark","fällt um mehr als 2 hPa"],[-1,"Anstieg","steigt um mehr als 1 hPa"]].map(x=>`<div class="opt" style="cursor:default"><span class="sw8" style="background:${x[0]===-1?UPCOL:LV.col[x[0]]}"></span><span class="tx"><b style="font-size:18px">${x[1]}</b><small>${x[2]}</small></span></div>`).join("")}
-      <p class="help" style="margin-top:18px">Für die Farbe eines ganzen Tages zählt zusätzlich der Abfall über 24 Stunden: ab 5 hPa Mäßig, ab 8 hPa Stark. Viele Menschen spüren vor allem schnelle Abfälle vor einem Wetterumschwung oder bei Föhn.</p>`);
+    pageShell("Druckindex erklärt", `<p class="help">Der Druckindex zeigt auf einer Skala von <b>0 bis 100</b>, wie schnell der Luftdruck fällt. Je höher, desto stärker der Wechsel.</p>
+      ${idxScale(null)}
+      ${CUTS.map((c,n)=>`<div class="opt" style="cursor:default"><span class="chip c${n}" style="width:96px;flex:none;text-align:center"><b>${c[0]}</b>bis ${c[1]}</span><span class="tx"><b style="font-size:18px">${c[2]}</b><small>${["unter 0,6 hPa in 3 h · unter 2,4 hPa am Tag","0,6 bis 1,2 hPa in 3 h · 2,4 bis 4,8 hPa am Tag","1,2 bis 2 hPa in 3 h · 4,8 bis 7,8 hPa am Tag","2 bis 2,6 hPa in 3 h · 7,8 bis 10 hPa am Tag","ab 2,6 hPa in 3 h · ab 10 hPa am Tag"][n]}<br>${c[3]}</small></span></div>`).join("")}
+      <h3 style="margin-top:26px">So wird gerechnet</h3>
+      <p class="help">Für jede 3 Stunden Phase gilt: 3 hPa Abfall ergeben Index 100, also 1 hPa etwa 33 Punkte. Für einen ganzen Tag zählt zusätzlich der Abfall über 24 Stunden: 12 hPa ergeben 100. Der Tageswert ist der höhere der beiden. Steigender Luftdruck zählt nicht in den Index und wird blau als Anstieg markiert.</p>
+      <p class="help">Die Grenzen sind eine Faustregel, kein medizinischer Grenzwert. Wie empfindlich du bist, zeigt dir die Auswertung im Tagebuch: dort siehst du den durchschnittlichen Index an deinen Kopfschmerztagen.</p>`);
   }
   if(p==="device"){
     pageShell("Gerät und Tagebuch", `<p class="help">Dein Tagebuch wird geschützt auf dem Server gespeichert. Mit dem Gerätecode kannst du es auf einem zweiten Gerät öffnen.</p>
