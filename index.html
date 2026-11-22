@@ -304,7 +304,7 @@ const store = {
 };
 let S = {
   loc: store.get("loc", null), gps: store.get("gps", true), diary: store.get("diary", {}),
-  token: store.get("token", null), level: store.get("level", 2), theme: store.get("theme","dynamic"),
+  token: store.get("token", null), level: store.get("level", 2), leads: store.get("leads", ["evening","h3"]), quiet: store.get("quiet", true), theme: store.get("theme","dynamic"),
   interval: store.get("interval", 15), zoom: store.get("zoom","2d"), data: null, pos: null, hl: null, pushOn:false, loadedAt: 0
 };
 
@@ -784,6 +784,8 @@ async function syncBackend(){
   if(r && r.diary){
     S.diary = r.diary; store.set("diary", S.diary);
     if(r.level){ S.level = r.level; store.set("level", S.level); }
+    if(Array.isArray(r.leads)){ S.leads = r.leads; store.set("leads", S.leads); }
+    if(typeof r.quiet==="boolean"){ S.quiet = r.quiet; store.set("quiet", S.quiet); }
     if(r.vapid) store.set("vapid", r.vapid);
     S.pushOn = !!r.pushOn && typeof Notification!=="undefined" && Notification.permission==="granted";
     if(S.data){ renderLog(); renderHome(); }
@@ -814,12 +816,25 @@ async function pushOff(){
 }
 
 /* ---------- Einstellungen ---------- */
+function leadText(hr){ // Beispiel: Druckabfall morgen um hr Uhr, Zeiten ab heute 0 Uhr gezählt
+  const ts = [];
+  if(S.leads.includes("evening")) ts.push(19);
+  if(S.leads.includes("morning")) ts.push(24+7);
+  for(const h of [24,12,6,3,1]) if(S.leads.includes("h"+h)){
+    let t = 24+hr-h, m = t%24;
+    if(S.quiet && m>=22) t = (Math.floor(t/24)+1)*24+7; else if(S.quiet && m<7) t = Math.floor(t/24)*24+7;
+    ts.push(t);
+  }
+  const u = [...new Set(ts)].sort((a,b)=>a-b).map(t=> (t<24?"heute":"morgen")+" um "+(t%24)+" Uhr");
+  return u.length>1 ? u.slice(0,-1).join(", ")+" und "+u[u.length-1] : u[0];
+}
+
 function renderSettings(){
   const tn = THEMES.find(t=>t[0]===S.theme)[1], iv = INTERVALS.find(x=>x[0]===S.interval)[1];
   const row = (id, col, icon, title, sub, val) => `<button class="srow" data-p="${id}"><span class="sq" style="background:${col}">${ic(icon)}</span><span class="tx">${title}${sub?`<small>${sub}</small>`:""}</span>${val?`<span class="val">${val}</span>`:""}${ic("i-chev")}</button>`;
   $("#setMain").innerHTML =
     row("theme","#5b6cf0","i-palette","Farbthema","",tn)+
-    row("warn","#ee5d70","i-bell","Warnungen","Push bei Druckabfall",S.pushOn?"An":"Aus")+
+    row("warn","#ee5d70","i-bell","Warnungen",S.leads.length?S.leads.map(x=>({evening:"Vorabend",morning:"Morgens",h24:"24 h",h12:"12 h",h6:"6 h",h3:"3 h",h1:"1 h"})[x]).join(" · "):"kein Zeitpunkt gewählt",S.pushOn?"An":"Aus")+
     row("loc","#2fa8e0","i-pin","Standort und Aktualisierung","",S.gps?"GPS":esc(S.loc?S.loc.name:""))+
     row("levels","#f2a65a","i-layers","Druckindex erklärt","Skala von 0 bis 100")+
     row("device","#5fb36a","i-phone","Gerät und Tagebuch","")+
@@ -842,13 +857,32 @@ function openPage(p){
     document.querySelectorAll(".opt[data-t]").forEach(b=> b.onclick = ()=>{ S.theme=b.dataset.t; store.set("theme",S.theme); applyTheme(); openPage("theme"); });
   }
   if(p==="warn"){
+    const opt = (id,t,sub) => `<button class="opt" data-lead="${id}"><span class="tx"><b style="font-size:18px">${t}</b>${sub?`<small>${sub}</small>`:""}</span>${S.leads.includes(id)?`<span class="chk">${ic("i-check")}</span>`:`<span class="chk" style="background:transparent;box-shadow:inset 0 0 0 2px rgba(255,255,255,.45)"></span>`}</button>`;
     pageShell("Warnungen", `
-      <div class="opt" style="cursor:default"><span class="tx"><b>Push Warnung</b><small>Morgens gegen 6:30 und abends gegen 17:30 Uhr prüft der Server die Vorhersage für die nächsten 30 Stunden und meldet sich nur, wenn ein Druckabfall kommt.</small></span><label class="sw"><input type="checkbox" id="pushToggle" ${S.pushOn?"checked":""}><span></span></label></div>
-      <div class="opt" style="cursor:default"><span class="tx"><b>Warnen ab</b><small>Stufe des Druckabfalls</small></span><select id="levelSel"><option value="2">Index 40 (Mäßig)</option><option value="3">Index 65 (Stark)</option><option value="4">Index 85 (Sehr stark)</option></select></div>
-      <div style="margin-top:22px"><button class="btn" id="pushTest">${ic("i-bell")}Testnachricht senden</button></div>
+      <div class="opt" style="cursor:default"><span class="tx"><b>Push Warnung</b><small>Der Server prüft jede Stunde die Vorhersage für die nächsten 48 Stunden und meldet sich nur, wenn ein Druckabfall ab deiner Warnstufe kommt.</small></span><label class="sw"><input type="checkbox" id="pushToggle" ${S.pushOn?"checked":""}><span></span></label></div>
+      <div class="opt" style="cursor:default"><span class="tx"><b>Warnen ab</b><small>Druckindex</small></span><select id="levelSel"><option value="2">Index 40 (Mäßig)</option><option value="3">Index 65 (Stark)</option><option value="4">Index 85 (Sehr stark)</option></select></div>
+      <h3 style="margin-top:28px">Wann warnen? <small>mehrere möglich</small></h3>
+      ${opt("evening","Am Vorabend um 19 Uhr","für Druckabfälle am nächsten Tag")}
+      ${opt("morning","Am selben Morgen um 7 Uhr","für Druckabfälle im Laufe des Tages")}
+      ${opt("h24","24 Stunden vorher","")}
+      ${opt("h12","12 Stunden vorher","")}
+      ${opt("h6","6 Stunden vorher","")}
+      ${opt("h3","3 Stunden vorher","")}
+      ${opt("h1","1 Stunde vorher","")}
+      <div class="opt" style="cursor:default;margin-top:10px"><span class="tx"><b>Nachtruhe</b><small>Zwischen 22 und 7 Uhr keine Warnungen. Was nachts fällig wäre, kommt um 7 Uhr, falls der Druckabfall dann noch bevorsteht.</small></span><label class="sw"><input type="checkbox" id="quietToggle" ${S.quiet?"checked":""}><span></span></label></div>
+      <p class="help" style="margin-top:18px" id="leadInfo"></p>
+      <div style="margin-top:14px"><button class="btn" id="pushTest">${ic("i-bell")}Testnachricht senden</button></div>
       <p class="help" style="margin-top:18px">Auf dem iPhone funktionieren Benachrichtigungen nur, wenn Kopfwetter über <b>Teilen</b> und <b>Zum Home Bildschirm</b> installiert ist und von dort geöffnet wird.</p>`);
+    const info = () => { $("#leadInfo").innerHTML = S.leads.length ? `Beispiel: Ein starker Druckabfall morgen ab 9 Uhr wird dir ${leadText(9)} gemeldet. Jede Warnung kommt pro Zeitpunkt nur einmal.` : `<b>Kein Zeitpunkt gewählt:</b> Es kommen keine Warnungen.`; };
+    info();
     $("#levelSel").value = S.level;
     $("#levelSel").onchange = e => { S.level = +e.target.value; store.set("level", S.level); api("settings", {level:S.level}); };
+    $("#quietToggle").onchange = e => { S.quiet = e.target.checked; store.set("quiet", S.quiet); api("settings", {quiet:S.quiet}); };
+    document.querySelectorAll(".opt[data-lead]").forEach(b=> b.onclick = ()=>{
+      const id = b.dataset.lead; S.leads = S.leads.includes(id) ? S.leads.filter(x=>x!==id) : [...S.leads, id];
+      store.set("leads", S.leads); api("settings", {leads:S.leads});
+      const y = $("#page").scrollTop; openPage("warn"); $("#page").scrollTop = y;
+    });
     $("#pushToggle").onchange = async e => { if(e.target.checked){ const ok = await pushOn(); e.target.checked = ok; S.pushOn = ok; } else { await pushOff(); S.pushOn = false; } };
     $("#pushTest").onclick = async ()=>{ const r = await api("push_test", {}); if(r) toast(r.sent ? "Testnachricht gesendet" : "Keine Push Anmeldung gefunden. Bitte zuerst einschalten.", 4000); };
   }
